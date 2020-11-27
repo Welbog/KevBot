@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mysqldump kevbot > backup.sql

@@ -1,0 +1,47 @@
+DONE - Create a simple HTTP listener, prove that it works - Done
+DONE - Simple concurrency work - synchronize these things (worry about better concurrency models later):
+ - Single RAHL - DONE
+ - Double RAHL - DONE
+ - Addressing mode - DONE
+ - SQL connection - DONE
+ - SQL interfaces - DONE x4 (factoids, markov, markovby, strangemarkovby)
+DONE - Make math persistent - Equations and variables should survive a reboot.
+ - COuld be as simple as serializing a map to disk. - DONE with Jackson ObjectMapper.
+DONE - Purge the DB of bad things:
+ - Racial slurs - DONE
+ - Homophobic slurs - DONE
+ - From Markov stuff too! - DONE
+ - Add filter to keep such words out of KevBot permanently - DONE
+DONE - Flesh out communication protocol
+ - Has to support all message types in the beginning. - DONE using JSON over POST
+DONE - Create IRC client using communication protocol HOT DAMN IT WORKS
+DONE - Need to make it work with jars, and clean up some of the interactions.
+TODO - Need to make sure client-side things like QUIT, JOIN and LEAVE work as expected
+ - JOIN and LEAVE work - DONE
+ - QUIT needs to be tested - TODO
+ - QUIET seems to have problems - TODO
+DONE - Add CLIENT to Seen text
+TODO - Move banned words to a file and add commands to manipulate said file.
+DONE - Move default-address-optional-mode channels to a file (Discord client only).
+
+
+Bugs: 
+DONE - Some kind of JSON-parsing bug causes the IRC client to die
+
+Long-term goals:
+TODO - Add CLIENT to RESPONSE (so that a response from one client can trigger a message on a different client)
+TODO - Have queues for each client, and add the ability for one client to trigger a message in another client's queue.
+ - The client API is a void giveMessage() method and a List<Request> getMessages() method.
+ - Need some way of saying a queue's activity is too old and delete it, such as when testing new clients.
+TODO - Add CLIENT to say/act
+TODO - Support Hangouts
+TODO - Support Alexa - PARTIALLY IMPLEMENTED
+TODO - Support Discord - PARTIALLY IMPLEMENTED
+NOPE - Support Line - Will never happen.
+TODO - Add transactions to SQL
+TODO - Move everything to SQL
+TODO - Add EXPLAIN mode, to print out which handlers did what to help understand some behaviour.
+TODO - Maven/Dependency management
+TODO - Spring/DI
+DONE - Remove IRC libraries/client.
+TODO - Automated tests and related refactoring to enable tests (will definitely require better DI)

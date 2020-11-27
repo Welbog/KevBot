@@ -1,0 +1,11 @@
+#!/bin/bash
+cp check.backup check.txt
+cp replies.backup replies.txt
+cp karma.backup karma.txt
+cp karmb.backup karmb.txt
+cp seensaid.backup seensaid.txt
+cp seenusers.backup seenusers.txt
+cp markov.backup markov.txt
+cp markov2.backup markov2.txt
+cp markov3.backup markov3.txt
+
