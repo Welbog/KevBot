@@ -19,12 +19,18 @@ In no particular order:
 * Unit testing
 * Integration testing
 * Support Discord features (@, unique user identifiers, usernames with spaces in them, etc)
+  * Drop support for JOIN and LEAVE, or modify them heavily for Discord since it works very differently from IRC.
 * Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)
 * Move to Spring or some other dependency-injection tool (instead of the shitty one I made myself).
 * Add security to the KevBot protocol somehow.
 * Break the codebase out better (client vs server vs intermediate libraries containing message objects, plugin interfaces, etc).
 * A feature for spontaneous communication, though I've personally wanted to avoid it. This would be implemented as a separate HTTP URL for polling new messages, by client. This could enable something like someone in IRC sending a message to someone in Discord using the `say` command.
 * Javadoc for at least the most important stuff (possibly auto-generated from the Documentation objects?) (possibly auto-generating part of this README from said Documentation objects?)
+* Maybe add support for Google Hangouts (or whatever they will inevitably replace it with)?
+* Improve Echo support.
+* Add SQL transactions & move things off of flat files and into SQL & add setup so that when KevBot detects a table is missing it can create it (or at least a set-up script).
+  * A general set-up script that can create default configuration, as well as basic default launch scripts for HTTP & Discord.
+* "Explain" mode that lists responder metadata so the handler chain can be examined & debugged more directly.
 * Lots of other stuff
 
 ## Code structure
