@@ -20,7 +20,7 @@ In no particular order:
 * Integration testing
 * Support Discord features (@, unique user identifiers, usernames with spaces in them, etc)
   * Drop support for JOIN and LEAVE, or modify them heavily for Discord since it works very differently from IRC.
-* Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)
+* ~~Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)~~
 * Move to Spring or some other dependency-injection tool (instead of the shitty one I made myself).
 * Add security to the KevBot protocol somehow.
 * Break the codebase out better (client vs server vs intermediate libraries containing message objects, plugin interfaces, etc).
