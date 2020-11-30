@@ -11,6 +11,37 @@ Maybe one day I can refactor it into something good, but I probably won't.
 
 The good news is that the plugin piece, as well as the math parsing and factoid systems are very robust. As a result, KevBot is quite reliable and extensible.
 
+## Installation/usage
+
+You will need:
+* Maven
+* Java
+* MySQL with a database created, with an admin user and a data user (technically they can be the same user but please no).
+* Node and NPM
+
+You will need to make changes in files:
+* kevbot.discord.config.json - Your bot's Discord token will need to be applied
+* kevbot.properties - Your MySQL connection string will need to be applied, both an admin and data user.
+
+Maven will import:
+* MySQL connector
+* Jackson serialization libraries
+
+To build, run
+* `mvn package` - This creates a directory, target, containing the KevBot jar file.
+
+To setup, run
+* `java -classpath target/*jar-with-dependencies.jar ca.welbog.kevbot.Setup`, sets up SQL structures.
+* `npm install discord.js` in the discord directory, there's definitely a better way to do this but I haven't bothered to figure it out yet.
+
+To launch, run
+* Server: `java -classpath target/*jar-with-dependencies.jar ca.welbog.kevbot.KevBot kevbot.config &>> /tmp/kevbot.server.log &`
+* Discord client: `scripts/discordclient.sh &>> /tmp/kevbot.discord.log &`
+
+Logs will be located in
+* /tmp/kevbot.server.log - server logs
+* /tmp/kevbot.discord.log - Discord client logs
+
 ## TODOs
 
 What does the future hold for KevBot?
@@ -28,9 +59,10 @@ In no particular order:
 * Javadoc for at least the most important stuff (possibly auto-generated from the Documentation objects?) (possibly auto-generating part of this README from said Documentation objects?)
 * Maybe add support for Google Hangouts (or whatever they will inevitably replace it with)?
 * Improve Echo support.
-* Add SQL transactions & move things off of flat files and into SQL & add setup so that when KevBot detects a table is missing it can create it (or at least a set-up script).
-  * A general set-up script that can create default configuration, as well as basic default launch scripts for HTTP & Discord.
+* Add SQL transactions & move things off of flat files and into SQL & ~~add setup so that when KevBot detects a table is missing it can create it (or at least a set-up script).~~
+  * ~~A general set-up script that can create default configuration, as well as basic default launch scripts for HTTP & Discord.~~
 * "Explain" mode that lists responder metadata so the handler chain can be examined & debugged more directly.
+* An actual logger instead of stdout.
 * Lots of other stuff
 
 ## Code structure

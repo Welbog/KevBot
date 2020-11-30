@@ -1,0 +1,9 @@
+{
+	"token": "<<DISCORD TOKEN>>",
+	"port": 1237,
+	"host": "localhost",
+	"path": "/kevbot",
+	"channelAddressingDefaults": {
+		"Your Server:Your channel": "STANDARD"
+	}
+}
