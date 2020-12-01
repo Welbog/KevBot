@@ -35,7 +35,7 @@ To setup, run
 * `npm install discord.js` in the discord directory, there's definitely a better way to do this but I haven't bothered to figure it out yet.
 
 To launch, run
-* Server: `java -classpath target/*jar-with-dependencies.jar ca.welbog.kevbot.KevBot kevbot.config &>> /tmp/kevbot.server.log &`
+* Server: `java -classpath target/*jar-with-dependencies.jar ca.welbog.kevbot.KevBot configuration/kevbot.xml &>> /tmp/kevbot.server.log &`
 * Discord client: `scripts/discordclient.sh &>> /tmp/kevbot.discord.log &`
 
 Logs will be located in
