@@ -11,8 +11,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils.NameAndRemainder;
 
@@ -90,11 +88,13 @@ public class MarkovByResponder implements Responder {
     return services;
   }
 
-  @Override
-  public void addService(String name, Service service) {
-    markovby1 = new SQLWeightedMarkovByName((ConnectionProvider) service, 1);
-    markovby2 = new SQLWeightedMarkovByName((ConnectionProvider) service, 2);
+  public void setOrder1ByDatabase(SQLWeightedMarkovByName database) {
+    markovby1 = database;
   }
+  public void setOrder2ByDatabase(SQLWeightedMarkovByName database) {
+    markovby2 = database;
+  }
+
 
   @Override
   public void close() {

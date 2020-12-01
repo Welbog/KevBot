@@ -52,7 +52,7 @@ In no particular order:
 * Support Discord features (@, unique user identifiers, usernames with spaces in them, etc)
   * Drop support for JOIN and LEAVE, or modify them heavily for Discord since it works very differently from IRC.
 * ~~Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)~~
-* Move to Spring or some other dependency-injection tool (instead of the shitty one I made myself).
+* ~~Move to Spring or some other dependency-injection tool (instead of the shitty one I made myself).~~
 * Add security to the KevBot protocol somehow.
 * ~~Break the codebase out better (client vs server vs intermediate libraries containing message objects, plugin interfaces, etc).~~
 * A feature for spontaneous communication, though I've personally wanted to avoid it. This would be implemented as a separate HTTP URL for polling new messages, by client. This could enable something like someone in IRC sending a message to someone in Discord using the `say` command.
@@ -77,14 +77,14 @@ Very haphazard.
   * ca/welbog/kevbot: Base KevBot class for launching the server, as well as its core processing loop.
     * client: a base HTTP client that can be used to build specific adapters, if those adapters are Java-based (which at this time none are).
     * communication: base classes for DTOs KevBot uses
-    * configuration: my terrible DI "framework".
     * core: KevBot's core processing loop and interfaces that make it go brrrrr
     * http: Server's HTTP entry point.
     * log: my terrible logging "framework".
     * persist: file- and SQL-based storage utilities.
     * responder: this is where the plugins live, the majority of the user-facing functionality of KevBot lives here.
-    * service: another part of the terrible DI "framework".
     * utils: what project is complete without a directory for misfit functions that should be refactored?
+* configuration: Spring XML configs. Why Spring XML? Because KevBot instances will want to add/remove plugins, and the order of the plugins matters. Spring XML offers a free way to accomplish this without having to do it myself.
+* target: the build directory
 
 ## Version history
 
@@ -145,3 +145,7 @@ The Discord client is a quick & dirty implementation.
 
 Removed IRC stuff, moved a bunch of security-related stuff to files that aren't in git.
 Clobbered git history, opened the repo to the public.
+
+### 6.2.x
+
+Late 2020 - Added Maven, refactored code, added setup scripts, added Spring. General focus on bringing engineering to KevBot. Making a codebase to which I might actually want to contribute. 

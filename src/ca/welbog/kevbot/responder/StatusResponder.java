@@ -14,7 +14,6 @@ import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.ConnectionProvider;
 import ca.welbog.kevbot.responder.factoid.DoubleSQL;
 import ca.welbog.kevbot.responder.markov.SQLWeightedMarkov;
-import ca.welbog.kevbot.service.Service;
 
 public class StatusResponder implements Responder {
 
@@ -68,13 +67,15 @@ public class StatusResponder implements Responder {
     services.add("SQL");
     return services;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-    replies = new DoubleSQL((ConnectionProvider) service);
-    markov1 = new SQLWeightedMarkov((ConnectionProvider) service, 1);
+  
+  public void setFactoidDatabase(DoubleSQL doubleSQL) {
+    replies = doubleSQL;
   }
-
+  
+  public void setOrder1Database(SQLWeightedMarkov markovDatabase) {
+    markov1 = markovDatabase;
+  }
+  
   @Override
   public void close() {
   }

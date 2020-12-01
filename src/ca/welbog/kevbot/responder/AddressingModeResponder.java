@@ -10,7 +10,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.service.Service;
 
 public class AddressingModeResponder implements Responder {
 
@@ -40,11 +39,6 @@ public class AddressingModeResponder implements Responder {
   @Override
   public List<String> getRequiredServiceNames() {
     return null;
-  }
-
-  @Override
-  public void addService(String name, Service service) {
-
   }
 
   @Override

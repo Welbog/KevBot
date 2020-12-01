@@ -11,8 +11,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 
 public class SpecificForgetResponder implements Responder {
 
@@ -67,10 +65,9 @@ public class SpecificForgetResponder implements Responder {
     services.add("SQL");
     return services;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-    replies = new DoubleSQL((ConnectionProvider) service);
+  
+  public void setFactoidDatabase(DoubleSQL database) {
+    replies = database;
   }
 
   @Override

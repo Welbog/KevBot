@@ -11,8 +11,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils.NameAndRemainder;
 
@@ -73,9 +71,8 @@ public class S2Responder implements Responder {
     return services;
   }
 
-  @Override
-  public void addService(String name, Service service) {
-    markovby2 = new SQLStrangeMarkovByName((ConnectionProvider) service);
+  public void setS2Database(SQLStrangeMarkovByName database) {
+    markovby2 = database;
   }
 
   @Override

@@ -9,9 +9,7 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
 import ca.welbog.kevbot.persist.SingleFile;
-import ca.welbog.kevbot.service.Service;
 
 public class RebuildNotableResponder implements Responder {
 
@@ -61,14 +59,13 @@ public class RebuildNotableResponder implements Responder {
     services.add("SQL");
     return services;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-    markovby2 = new SQLWeightedMarkovByName((ConnectionProvider) service, 2);
-
-    SingleFile notable = new SingleFile("notable.txt"); // Create the notable
-                                                        // list if it doesn't
-                                                        // exist at startup.
+  
+  public void setOrder2ByDatabase(SQLWeightedMarkovByName database) {
+    markovby2 = database;
+    
+    // Create the notable list if it doesn't exist at startup.
+    // TODO: This shouldn't be in a setter.
+    SingleFile notable = new SingleFile("notable.txt"); 
     List<String> users = notable.getAll();
     if (users.size() == 0) {
       markovby2.rebuildNotableUsers();

@@ -11,8 +11,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 
 public class SeedlessMarkovResponder implements Responder {
 
@@ -79,10 +77,11 @@ public class SeedlessMarkovResponder implements Responder {
     return services;
   }
 
-  @Override
-  public void addService(String name, Service service) {
-    markov1 = new SQLWeightedMarkov((ConnectionProvider) service, 1);
-    markov2 = new SQLWeightedMarkov((ConnectionProvider) service, 2);
+  public void setOrder1Database(SQLWeightedMarkov database) {
+    markov1 = database;
+  }
+  public void setOrder2Database(SQLWeightedMarkov database) {
+    markov2 = database;
   }
 
   @Override

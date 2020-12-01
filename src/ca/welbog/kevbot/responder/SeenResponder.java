@@ -13,7 +13,6 @@ import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.DoubleFile;
 import ca.welbog.kevbot.persist.DoubleStorage;
-import ca.welbog.kevbot.service.Service;
 
 public class SeenResponder implements Responder {
 
@@ -66,11 +65,7 @@ public class SeenResponder implements Responder {
   public List<String> getRequiredServiceNames() {
     return null;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-  }
-
+  
   @Override
   public void close() {
     db.close();

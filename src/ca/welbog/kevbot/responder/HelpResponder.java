@@ -15,7 +15,6 @@ import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.log.Logger;
-import ca.welbog.kevbot.service.Service;
 
 public class HelpResponder implements Responder {
   private Map<String, Responder> responders = new HashMap<>();
@@ -191,12 +190,7 @@ public class HelpResponder implements Responder {
   public List<String> getRequiredServiceNames() {
     return new ArrayList<String>();
   }
-
-  @Override
-  public void addService(String name, Service service) {
-
-  }
-
+  
   @Override
   public void close() {
   }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<import resource="responders.xml" />
+
+	<bean name="kevbot" class="ca.welbog.kevbot.KevBot">
+		<constructor-arg ref="logger" />
+		<constructor-arg ref="httpListener" />
+	</bean>
+
+	<bean name="httpListener" class="ca.welbog.kevbot.http.HTTPListener">
+		<constructor-arg ref="logger" />
+		<constructor-arg ref="processor" />
+	</bean>
+
+	<bean name="logger" class="ca.welbog.kevbot.log.Logger">
+		<constructor-arg>
+			<value type="boolean">false</value>
+		</constructor-arg>
+	</bean>
+
+	<bean name="processor" class="ca.welbog.kevbot.core.Processor">
+		<constructor-arg ref="logger" />
+		<constructor-arg ref="responders" />
+	</bean>
+
+	<bean name="sqlConnectionProvider" class="ca.welbog.kevbot.persist.ConnectionProvider" />
+	
+	<bean name="factoidDatabase" class="ca.welbog.kevbot.responder.factoid.DoubleSQL">
+		<constructor-arg ref="sqlConnectionProvider"/>
+	</bean>
+	<bean name="markov1Database" class="ca.welbog.kevbot.responder.markov.SQLWeightedMarkov">
+		<constructor-arg ref="sqlConnectionProvider"/>
+		<constructor-arg type="int" value="1"/>
+	</bean>
+	<bean name="markov2Database" class="ca.welbog.kevbot.responder.markov.SQLWeightedMarkov">
+		<constructor-arg ref="sqlConnectionProvider"/>
+		<constructor-arg type="int" value="2"/>
+	</bean>
+	<bean name="markov1ByDatabase" class="ca.welbog.kevbot.responder.markov.SQLWeightedMarkovByName">
+		<constructor-arg ref="sqlConnectionProvider"/>
+		<constructor-arg type="int" value="1"/>
+	</bean>
+	<bean name="markov2ByDatabase" class="ca.welbog.kevbot.responder.markov.SQLWeightedMarkovByName">
+		<constructor-arg ref="sqlConnectionProvider"/>
+		<constructor-arg type="int" value="2"/>
+	</bean>
+	<bean name="s2Database" class="ca.welbog.kevbot.responder.markov.SQLStrangeMarkovByName">
+		<constructor-arg ref="sqlConnectionProvider"/>
+	</bean>
+
+</beans>

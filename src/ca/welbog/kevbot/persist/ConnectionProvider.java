@@ -11,9 +11,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Properties;
 
-import ca.welbog.kevbot.service.Service;
-
-public class ConnectionProvider implements Service {
+public class ConnectionProvider {
   private Connection conn = null;
   private Date lastConnectionCreationTime = new Date();
   private static final Long TIMEOUT_IN_MILLISECONDS = 600000L; // 10 minutes
@@ -91,7 +89,6 @@ public class ConnectionProvider implements Service {
     }
   }
 
-  @Override
   public synchronized void close() {
     try {
       if (conn != null) {
@@ -109,8 +106,6 @@ public class ConnectionProvider implements Service {
     }
     conn = null;
   }
-
-  @Override
   public synchronized Connection getObject() {
     if (verifyConnection()) {
       return conn;

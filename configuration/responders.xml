@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- Order matters here -->
+	<util:list id="responders" value-type="ca.welbog.kevbot.core.Responder">
+		
+		<!-- Admin-only core commands -->
+		<ref bean="chgnickResponder"/>
+		<ref bean="sayActResponder"/>
+		<ref bean="joinLeaveResponder"/>
+		<ref bean="rebuildNotableUsersResponder"/>
+		
+		<!-- Other core commands -->
+		<ref bean="addressingModeResponder"/>
+		<ref bean="seenResponder"/>
+		<ref bean="karmaResponder"/>
+		<ref bean="messagingResponder"/>
+		<ref bean="showNotableUsersResponder"/>
+		<ref bean="factoidResponder"/>
+		<ref bean="statusResponder"/>
+		<ref bean="forgetUnforgetResponder"/>
+		<ref bean="forgetSpecificResponder"/>
+		
+		<!-- Recursive commands -->
+		<ref bean="dateResponder"/>
+		
+		<ref bean="markovByResponder"/>
+		<ref bean="markovResponder"/>
+		<ref bean="seedlessMarkovByResponder"/>
+		<ref bean="seedlessMarkovResponder"/>
+		<ref bean="guessResponder"/>
+		<ref bean="guessByResponder"/>
+		<ref bean="s2Responder"/>
+  
+		<ref bean="diceResponder"/>
+		<ref bean="shadowrunDiceResponder"/>
+		<ref bean="mathResponder"/>
+		
+		<!-- Listeners (i.e., responders that never respond, only passively gather data) -->
+		<ref bean="markovListener"/>
+		<ref bean="replyListener"/>
+		
+		<!-- This is the primary factoid processor, which also is the only responder capable of creating recursive calls.
+		It is last because it can potentially respond to anything, depending on what factoids have been stored. -->
+		<ref bean="replyResponder"/>
+	</util:list>
+	
+	<bean name="chgnickResponder" class="ca.welbog.kevbot.responder.ChangeNicknameResponder">
+		<property name="responderType" value="CORE"/>
+		<property name="adminOnly" value="true"/>
+	</bean>
+	
+	<bean name="sayActResponder" class="ca.welbog.kevbot.responder.SayActResponder">
+		<property name="responderType" value="CORE"/>
+		<property name="adminOnly" value="true"/>
+	</bean>
+	
+	<bean name="joinLeaveResponder" class="ca.welbog.kevbot.responder.JoinLeaveResponder">
+		<property name="responderType" value="CORE"/>
+		<property name="adminOnly" value="true"/>
+	</bean>
+	
+	<bean name="rebuildNotableUsersResponder" class="ca.welbog.kevbot.responder.markov.RebuildNotableResponder">
+		<property name="responderType" value="CORE"/>
+		<property name="adminOnly" value="true"/>
+	</bean>
+	
+	<bean name="addressingModeResponder" class="ca.welbog.kevbot.responder.AddressingModeResponder"/>
+	<bean name="seenResponder" class="ca.welbog.kevbot.responder.SeenResponder"/>
+	<bean name="karmaResponder" class="ca.welbog.kevbot.responder.KarmaResponder"/>
+	<bean name="messagingResponder" class="ca.welbog.kevbot.responder.MessagingResponder"/>
+	<bean name="showNotableUsersResponder" class="ca.welbog.kevbot.responder.markov.ShowNotableResponder">
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="factoidResponder" class="ca.welbog.kevbot.responder.factoid.FactoidResponder">
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+	</bean>
+	<bean name="statusResponder" class="ca.welbog.kevbot.responder.StatusResponder">
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+		<property name="order1Database" ref="markov1Database"/>
+	</bean>
+	<bean name="forgetUnforgetResponder" class="ca.welbog.kevbot.responder.factoid.ForgetUnforgetResponder">
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+	</bean>
+	<bean name="forgetSpecificResponder" class="ca.welbog.kevbot.responder.factoid.SpecificForgetResponder">
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+	</bean>
+	
+	<bean name="dateResponder" class="ca.welbog.kevbot.responder.DateResponder">
+		<property name="responderType" value="RECURSIVE"/>
+	</bean>
+	<bean name="markovByResponder" class="ca.welbog.kevbot.responder.markov.MarkovByResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order1ByDatabase" ref="markov1ByDatabase"/>
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="markovResponder" class="ca.welbog.kevbot.responder.markov.MarkovResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order1Database" ref="markov1Database"/>
+		<property name="order2Database" ref="markov2Database"/>
+	</bean>
+	<bean name="seedlessMarkovByResponder" class="ca.welbog.kevbot.responder.markov.SeedlessMarkovByResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order1ByDatabase" ref="markov1ByDatabase"/>
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="seedlessMarkovResponder" class="ca.welbog.kevbot.responder.markov.SeedlessMarkovResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order1Database" ref="markov1Database"/>
+		<property name="order2Database" ref="markov2Database"/>
+	</bean>
+	<bean name="guessResponder" class="ca.welbog.kevbot.responder.markov.GuessResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="guessByResponder" class="ca.welbog.kevbot.responder.markov.GuessByResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="s2Responder" class="ca.welbog.kevbot.responder.markov.S2Responder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="s2Database" ref="s2Database"/>
+	</bean>
+	<bean name="diceResponder" class="ca.welbog.kevbot.responder.math.DiceResponder">
+		<property name="responderType" value="RECURSIVE"/>
+	</bean>
+	<bean name="shadowrunDiceResponder" class="ca.welbog.kevbot.responder.math.ShadowrunDiceResponder">
+		<property name="responderType" value="RECURSIVE"/>
+	</bean>
+	<bean name="mathResponder" class="ca.welbog.kevbot.responder.math.MathResponder">
+		<property name="responderType" value="RECURSIVE"/>
+	</bean>
+  
+	<bean name="markovListener" class="ca.welbog.kevbot.responder.markov.MarkovListenerResponder">
+		<property name="order1Database" ref="markov1Database"/>
+		<property name="order2Database" ref="markov2Database"/>
+		<property name="order1ByDatabase" ref="markov1ByDatabase"/>
+		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
+	</bean>
+	<bean name="replyListener" class="ca.welbog.kevbot.responder.factoid.ReplyListenerResponder">
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+	</bean>
+  
+	<bean name="replyResponder" class="ca.welbog.kevbot.responder.factoid.ReplyResponder">
+		<property name="responderType" value="RECURSIVE"/>
+		<property name="factoidDatabase" ref="factoidDatabase"/>
+	</bean>
+
+</beans>

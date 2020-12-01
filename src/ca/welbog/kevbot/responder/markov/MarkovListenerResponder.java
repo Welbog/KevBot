@@ -8,8 +8,6 @@ import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 
 public class MarkovListenerResponder implements Responder {
 
@@ -41,12 +39,18 @@ public class MarkovListenerResponder implements Responder {
     return services;
   }
 
-  @Override
-  public void addService(String name, Service service) {
-    markovby1 = new SQLWeightedMarkovByName((ConnectionProvider) service, 1);
-    markovby2 = new SQLWeightedMarkovByName((ConnectionProvider) service, 2);
-    markov1 = new SQLWeightedMarkov((ConnectionProvider) service, 1);
-    markov2 = new SQLWeightedMarkov((ConnectionProvider) service, 2);
+
+  public void setOrder1Database(SQLWeightedMarkov database) {
+    markov1 = database;
+  }
+  public void setOrder2Database(SQLWeightedMarkov database) {
+    markov2 = database;
+  }
+  public void setOrder1ByDatabase(SQLWeightedMarkovByName database) {
+    markovby1 = database;
+  }
+  public void setOrder2ByDatabase(SQLWeightedMarkovByName database) {
+    markovby2 = database;
   }
 
   @Override

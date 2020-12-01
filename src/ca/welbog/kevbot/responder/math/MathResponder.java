@@ -11,7 +11,6 @@ import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.KarmaFile;
-import ca.welbog.kevbot.service.Service;
 
 public class MathResponder implements Responder {
 
@@ -115,11 +114,7 @@ public class MathResponder implements Responder {
   public List<String> getRequiredServiceNames() {
     return null;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-  }
-
+  
   @Override
   public void close() {
   }

@@ -39,6 +39,9 @@ public class HTTPListener implements HttpHandler {
     httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
     httpServer.createContext(CONTEXT, this);
     httpServer.setExecutor(null);
+  }
+  
+  public void start() {
     httpServer.start();
   }
 

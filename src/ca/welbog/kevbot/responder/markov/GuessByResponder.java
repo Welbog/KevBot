@@ -12,7 +12,6 @@ import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.ConnectionProvider;
-import ca.welbog.kevbot.service.Service;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils;
 import ca.welbog.kevbot.utils.NamesWithSpacesUtils.NameAndRemainder;
 
@@ -70,10 +69,9 @@ public class GuessByResponder implements Responder {
     services.add("SQL");
     return services;
   }
-
-  @Override
-  public void addService(String name, Service service) {
-    markovby2 = new SQLWeightedMarkovByName((ConnectionProvider) service, 2);
+  
+  public void setOrder2ByDatabase(SQLWeightedMarkovByName database) {
+    markovby2 = database;
   }
 
   @Override

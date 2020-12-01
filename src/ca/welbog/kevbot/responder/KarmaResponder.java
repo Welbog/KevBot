@@ -11,7 +11,6 @@ import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.KarmaFile;
-import ca.welbog.kevbot.service.Service;
 
 public class KarmaResponder implements Responder {
   private KarmaFile karma; // KarmaFile for karma.
@@ -90,10 +89,6 @@ public class KarmaResponder implements Responder {
   @Override
   public List<String> getRequiredServiceNames() {
     return null;
-  }
-
-  @Override
-  public void addService(String name, Service service) {
   }
 
   @Override
