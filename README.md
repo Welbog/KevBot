@@ -49,6 +49,8 @@ What does the future hold for KevBot?
 In no particular order:
 * Unit testing
 * Integration testing
+* Do an info-dump of KevBot's Documentation objects into the github-provided wiki, ideally with more elaborate examples, and a link to said wiki from KevBot's help messages.
+  * Especially examples of the more involved factoids, like the Hogwarts points, math recursion like `$triangle` and pattern matching like `I $a $b`.
 * Support Discord features (@, unique user identifiers, usernames with spaces in them, etc)
   * Drop support for JOIN and LEAVE, or modify them heavily for Discord since it works very differently from IRC.
 * ~~Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)~~
