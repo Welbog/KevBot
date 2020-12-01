@@ -1,4 +1,4 @@
-package ca.welbog.kevbot;
+package ca.welbog.kevbot.core;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -9,24 +9,21 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.log.Logger;
 import ca.welbog.kevbot.persist.SingleFile;
 import ca.welbog.kevbot.responder.HelpResponder;
-import ca.welbog.kevbot.responder.ResponderMetadata;
-import ca.welbog.kevbot.responder.ResponderMetadata.Type;
 
 public class Processor {
 
   private Logger log = null;
-  private List<ResponderMetadata> responders;
+  private List<Responder> responders;
   private SingleFile ignore, admin, bannedWords;
   private static final int MAX_ITERATION = 256;
 
-  public Processor(Logger logger, List<ResponderMetadata> responders) {
+  public Processor(Logger logger, List<Responder> responders) {
     this.log = logger;
     this.responders = responders;
 
     // Create a help responder to handle help messages
     HelpResponder responder = new HelpResponder(responders);
-    ResponderMetadata metadata = new ResponderMetadata(responder, false, Type.CORE);
-    responders.add(0, metadata);
+    responders.add(0, responder);
 
     // Create in-memory stores
     ignore = new SingleFile("ignore.txt");
@@ -45,7 +42,7 @@ public class Processor {
     if (ignore.exists(request.getSender())) {
       return Response.STOP_NOW;
     }
-    
+
     // Ignore messages with banned words, for various terms of service.
     if (containsBannedWords(request.getMessage())) {
       return Response.STOP_NOW;
@@ -137,12 +134,12 @@ public class Processor {
 
   private Response runPluginResponders(Request request, boolean admin) {
     Response response = null;
-    for (ResponderMetadata responder : responders) {
+    for (Responder responder : responders) {
       if (!responder.isAdminOnly() || (responder.isAdminOnly() && admin)) {
         response = responder.getResponse(request);
         if (response != null) {
           log.debug("Found response from plugin: " + response);
-          log.debug("Response class: " + responder.getResponder().getClass().getName());
+          log.debug("Response class: " + responder.getClass().getName());
           break;
         }
       }
@@ -160,7 +157,8 @@ public class Processor {
     return runRecursiveResponders(request, response, admin);
   }
 
-  private Response runRecursiveResponders(Request request, Response intermediateResponse, boolean admin) {
+  private Response runRecursiveResponders(Request request, Response intermediateResponse,
+      boolean admin) {
 
     String subMessage = intermediateResponse.findFirstSubString();
     if (subMessage == null) {
@@ -169,8 +167,9 @@ public class Processor {
     int iteration = 0;
     while (subMessage != null && iteration < MAX_ITERATION) {
       // Loop until there's no more recursion, or until we've hit a maximum.
-      Request innerRequest = new Request(request.getMedium(), request.getChannel(), request.getSender(), subMessage, 
-          request.getNickname(), request.getMode(), request.getType());
+      Request innerRequest = new Request(request.getMedium(), request.getChannel(),
+          request.getSender(), subMessage, request.getNickname(), request.getMode(),
+          request.getType());
       innerRequest.allowReplies(false);
       String innerResponse = runRecursiveResponders(innerRequest);
       intermediateResponse.replaceFirstSubString(innerResponse);
@@ -182,8 +181,8 @@ public class Processor {
 
   private String runRecursiveResponders(Request request) {
     Response response = null;
-    for (ResponderMetadata responder : responders) {
-      if (responder.admin || responder.type != Type.RECURSIVE) {
+    for (Responder responder : responders) {
+      if (responder.isAdminOnly() || responder.getResponderType() != ResponderType.RECURSIVE) {
         continue;
       } // Only deal with non-admin recursive commands
       response = responder.getResponse(request);

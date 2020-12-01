@@ -1,4 +1,5 @@
 package ca.welbog.kevbot.responder.math;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +18,15 @@ import java.util.List;
  * @author Inferno
  */
 public class ParseTree2 {
-  
+
   public static void DEBUG(String s) {
-    //System.out.println(s);
+    // System.out.println(s);
   }
 
   private boolean canEvaluate(Token token) {
     return token.getType() == Token.Types.CONST || token.getType() == Token.Types.SUB;
   }
-  
+
   // This will hopefully be used when symbolic evaluation is a thing
   @SuppressWarnings("unused")
   private Double evaluate(Token token) throws Exception {
@@ -34,23 +35,25 @@ public class ParseTree2 {
     }
     return token.evaluate();
   }
-  
 
   public double parseInitial(TokenCollection TC) throws Exception {
-    // Determine if the expression is variable assignment, function assignment or a normal expression
-    if ((TC.size() > 2) && (TC.getToken(1).getType() == Token.Types.ASSIGN) && 
-        (TC.getToken(0).getType() == Token.Types.STRING)) {
+    // Determine if the expression is variable assignment, function assignment
+    // or a normal expression
+    if ((TC.size() > 2) && (TC.getToken(1).getType() == Token.Types.ASSIGN)
+        && (TC.getToken(0).getType() == Token.Types.STRING)) {
       TokenCollection TC2 = new TokenCollection(this);
       for (int i = 2; i < TC.size(); i++) {
         TC2.add(TC.getToken(i));
       }
       DEBUG("Subexpression: " + TC2.toString());
-      VariableHash.instance().store(TC.getToken(0).getValue().getString(),TC2.evaluate());
+      VariableHash.instance().store(TC.getToken(0).getValue().getString(), TC2.evaluate());
       throw new AssignmentException("Variable assignment. Nothing to worry about.");
     }
     else {
       if (handleFunctionAssignment(TC)) {
-        throw new AssignmentException("Function assignment. Nothing to worry about."); // It's function assignment
+        throw new AssignmentException("Function assignment. Nothing to worry about."); // It's
+                                                                                       // function
+                                                                                       // assignment
       }
       else {
         double result = TC.evaluate(); // It's normal
@@ -59,62 +62,86 @@ public class ParseTree2 {
       }
     }
   }
-  
+
   private boolean handleFunctionAssignment(TokenCollection TC) {
     boolean containsAssign = false;
     int assignPosition = -1;
-    for (int i = 0; i < TC.size(); i++) { // If there's an assign in the statement, this might be a function definition
-      if (TC.getToken(i).getType() == Token.Types.ASSIGN && containsAssign) { return false; }
-      if (TC.getToken(i).getType() == Token.Types.ASSIGN && !containsAssign) { containsAssign = true; assignPosition = i;}
+    for (int i = 0; i < TC.size(); i++) { // If there's an assign in the
+                                          // statement, this might be a function
+                                          // definition
+      if (TC.getToken(i).getType() == Token.Types.ASSIGN && containsAssign) {
+        return false;
+      }
+      if (TC.getToken(i).getType() == Token.Types.ASSIGN && !containsAssign) {
+        containsAssign = true;
+        assignPosition = i;
+      }
     }
-    if (!containsAssign) { return false; }
-    
+    if (!containsAssign) {
+      return false;
+    }
+
     TokenCollection signature = new TokenCollection(this), expression = new TokenCollection(this);
     for (int i = 0; i < assignPosition; i++) {
       signature.add(TC.getToken(i));
     }
-    for (int i = assignPosition+1; i < TC.size(); i++) {
+    for (int i = assignPosition + 1; i < TC.size(); i++) {
       expression.add(TC.getToken(i));
     }
-    //System.out.println(signature.toString() + " := " + expression.toString());
-    
+    // System.out.println(signature.toString() + " := " +
+    // expression.toString());
+
     // Signature must be a string and a comma-separated list of sub expressions
     boolean signatureCorrect = signature.getToken(0).getType() == Token.Types.STRING;
     signatureCorrect = signatureCorrect && signature.getToken(1).getType() == Token.Types.SUB;
-    if (!signatureCorrect) { return false; }
-    for (int i = 1; i < signature.size(); i++) {
-      if (i%2==1) { signatureCorrect = signatureCorrect && signature.getToken(i).getType() == Token.Types.SUB; }
-      else { signatureCorrect = signatureCorrect && signature.getToken(i).getType() == Token.Types.COMMA; }
+    if (!signatureCorrect) {
+      return false;
     }
-    if (!signatureCorrect) { return false; }
+    for (int i = 1; i < signature.size(); i++) {
+      if (i % 2 == 1) {
+        signatureCorrect = signatureCorrect && signature.getToken(i).getType() == Token.Types.SUB;
+      }
+      else {
+        signatureCorrect = signatureCorrect && signature.getToken(i).getType() == Token.Types.COMMA;
+      }
+    }
+    if (!signatureCorrect) {
+      return false;
+    }
     List<Token> paramList = new ArrayList<Token>();
-    for (int i = 1; i < signature.size(); i+=2) {
+    for (int i = 1; i < signature.size(); i += 2) {
       TokenCollection potentialParam = signature.getToken(i).getValue().getTokenCollection();
-      if (potentialParam.size() != 1) { return false; }
+      if (potentialParam.size() != 1) {
+        return false;
+      }
       Token param = potentialParam.getToken(0);
-      if (param.getType() != Token.Types.STRING) { return false; }
+      if (param.getType() != Token.Types.STRING) {
+        return false;
+      }
       paramList.add(param);
     }
     // Now we have a list of parameters, and an expression
-    
+
     if (assignPosition == TC.size() - 1) {
       // Assigned to a constant, so get rid of the function definition.
-      FunctionHash.instance().clear(signature.getToken(0).getValue().getString(),paramList);
+      FunctionHash.instance().clear(signature.getToken(0).getValue().getString(), paramList);
     }
     else {
-      FunctionHash.instance().store(signature.getToken(0).getValue().getString(), paramList, expression);
-      VariableHash.instance().store(signature.getToken(0).getValue().getString(),0.0); // Clear the constant
+      FunctionHash.instance().store(signature.getToken(0).getValue().getString(), paramList,
+          expression);
+      VariableHash.instance().store(signature.getToken(0).getValue().getString(), 0.0); // Clear
+                                                                                        // the
+                                                                                        // constant
     }
-    
+
     return true;
   }
-  
-  
+
   public double parseRecursive(TokenCollection TC) throws Exception {
-    //DEBUG(calls + "");
-    
+    // DEBUG(calls + "");
+
     DEBUG("Input " + TC.toString());
-    
+
     // Passes
     TC = expandVariables(TC);
     TC = evaluateFunctions(TC);
@@ -128,8 +155,12 @@ public class ParseTree2 {
 
     // Final checks
     DEBUG("LAST " + TC.toString());
-    if (TC.size() != 1) { throw new Exception(); }
-    if (TC.getToken(0).getType() != Token.Types.CONST) { throw new Exception(); }
+    if (TC.size() != 1) {
+      throw new Exception();
+    }
+    if (TC.getToken(0).getType() != Token.Types.CONST) {
+      throw new Exception();
+    }
 
     return (TC.getToken(0).getValue().getDouble());
   }
@@ -137,14 +168,18 @@ public class ParseTree2 {
   private double rollDice(double number, double upper, boolean explode) {
     double result = 0;
     int x = 1, y = 0;
-    x = (int)number; y = (int)upper;
+    x = (int) number;
+    y = (int) upper;
     if ((x > 64) || (x < -64)) {
       return Double.NaN;
     }
     if (x == 0) {
       return 0;
     }
-    if (x < 0) { x *= -1; y *= -1; }
+    if (x < 0) {
+      x *= -1;
+      y *= -1;
+    }
     if ((y > 4096) || (y < -4096)) {
       return Double.NaN;
     }
@@ -159,10 +194,10 @@ public class ParseTree2 {
     }
     int count = x;
     for (int i = 0; i < x; i++) {
-      int temp = (int)Math.floor(Math.random()*(double)y)+1;
+      int temp = (int) Math.floor(Math.random() * (double) y) + 1;
       int total = temp;
       while (explode && temp == y && count < 64) {
-        temp = (int)Math.floor(Math.random()*(double)y)+1;
+        temp = (int) Math.floor(Math.random() * (double) y) + 1;
         total += temp;
         count++;
       }
@@ -170,9 +205,8 @@ public class ParseTree2 {
     }
     return result;
   }
-  
-  
-  // Parsing passes  
+
+  // Parsing passes
   private TokenCollection expandVariables(TokenCollection TC) {
 
     // Variable/Constant pass
@@ -180,36 +214,39 @@ public class ParseTree2 {
     for (int i = 0; i < TC.size(); i++) {
       Token t = TC.getToken(i);
       if (t.getType() == Token.Types.STRING) {
-        // Strings are variables if they're in the variable hash, or if they're not in the function hash
+        // Strings are variables if they're in the variable hash, or if they're
+        // not in the function hash
         String name = t.getValue().getString();
         boolean isVar = VariableHash.instance().read(name) != 0.0;
         boolean mightBeFunc = FunctionHash.instance().containsName(name);
         if (isVar) {
-          passVar.add(new Token(Token.Types.CONST,VariableHash.instance().read(t.getValue().getString())));
+          passVar.add(
+              new Token(Token.Types.CONST, VariableHash.instance().read(t.getValue().getString())));
         }
         else if (!mightBeFunc) {
-          passVar.add(new Token(Token.Types.CONST,VariableHash.instance().read(t.getValue().getString())));
+          passVar.add(
+              new Token(Token.Types.CONST, VariableHash.instance().read(t.getValue().getString())));
         }
         else {
           passVar.add(t);
-        } 
+        }
       }
       else {
         passVar.add(t);
-      } 
+      }
     }
     DEBUG("pass var " + passVar.toString());
     return passVar;
   }
-  
+
   private TokenCollection evaluateSubExpressions(TokenCollection TC) throws Exception {
-    
+
     // Parentheses pass
     TokenCollection pass1 = new TokenCollection(this);
     for (int i = 0; i < TC.size(); i++) {
       Token t = TC.getToken(i);
       if (t.getType() == Token.Types.SUB) {
-        pass1.add(new Token(Token.Types.CONST,t.getValue().getTokenCollection().evaluate()));
+        pass1.add(new Token(Token.Types.CONST, t.getValue().getTokenCollection().evaluate()));
       }
       else {
         pass1.add(t);
@@ -217,9 +254,9 @@ public class ParseTree2 {
     }
     DEBUG("pass 1 " + pass1.toString());
     return pass1;
-    
+
   }
-  
+
   private TokenCollection evaluateFunctions(TokenCollection TC) throws Exception {
 
     // N-variable function pass
@@ -239,8 +276,9 @@ public class ParseTree2 {
               List<Token> stackdump = new ArrayList<Token>(stack);
               Token function = stackdump.get(0);
               stackdump.remove(0);
-              double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump, this)).evaluate();
-              functionPass.add(new Token(Token.Types.CONST,result));
+              double result = (FunctionHash.instance().read(function.getValue().getString(),
+                  stackdump, this)).evaluate();
+              functionPass.add(new Token(Token.Types.CONST, result));
               stack.clear();
               stack.push(t);
             }
@@ -249,8 +287,8 @@ public class ParseTree2 {
             }
           }
         }
-        else { //!mightBeFunc
-          functionPass.add(new Token(Token.Types.CONST,0.0));
+        else { // !mightBeFunc
+          functionPass.add(new Token(Token.Types.CONST, 0.0));
         }
       }
       else if (canEvaluate(t)) {
@@ -261,7 +299,7 @@ public class ParseTree2 {
           if (stack.peek().getType() == Token.Types.COMMA) {
             stack.pop();
             stack.push(t);
-          }              
+          }
           else if (stack.peek().getType() == Token.Types.STRING) {
             stack.push(t);
           }
@@ -270,8 +308,9 @@ public class ParseTree2 {
             List<Token> stackdump = new ArrayList<Token>(stack);
             Token function = stackdump.get(0);
             stackdump.remove(0);
-            double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump, this)).evaluate();
-            functionPass.add(new Token(Token.Types.CONST,result));
+            double result = (FunctionHash.instance().read(function.getValue().getString(),
+                stackdump, this)).evaluate();
+            functionPass.add(new Token(Token.Types.CONST, result));
             stack.clear();
           }
         }
@@ -297,30 +336,34 @@ public class ParseTree2 {
           List<Token> stackdump = new ArrayList<Token>(stack);
           Token function = stackdump.get(0);
           stackdump.remove(0);
-          double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump, this)).evaluate();
-          functionPass.add(new Token(Token.Types.CONST,result));
+          double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump,
+              this)).evaluate();
+          functionPass.add(new Token(Token.Types.CONST, result));
           stack.clear();
           functionPass.add(t);
         }
       }
     }
-    
+
     if (!stack.isEmpty() && canEvaluate(stack.peek())) {
       List<Token> stackdump = new ArrayList<Token>(stack);
       Token function = stackdump.get(0);
       stackdump.remove(0);
-      double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump, this)).evaluate();
-      functionPass.add(new Token(Token.Types.CONST,result));
+      double result = (FunctionHash.instance().read(function.getValue().getString(), stackdump,
+          this)).evaluate();
+      functionPass.add(new Token(Token.Types.CONST, result));
       stack.clear();
     }
-    
+
     DEBUG("pass function " + functionPass.toString());
-    if (!stack.empty()) { throw new Exception(); }
-    
+    if (!stack.empty()) {
+      throw new Exception();
+    }
+
     return functionPass;
-    
+
   }
-  
+
   private TokenCollection evaluateDice(TokenCollection TC) throws Exception {
 
     // Dice pass
@@ -340,11 +383,15 @@ public class ParseTree2 {
           else {
             if (stack.peek().getType() == Token.Types.DICE) {
               stack.pop();
-              stack.push(new Token(Token.Types.CONST,rollDice(stack.pop().getValue().getDouble().doubleValue(),t.getValue().getDouble().doubleValue(),false)));
+              stack.push(new Token(Token.Types.CONST,
+                  rollDice(stack.pop().getValue().getDouble().doubleValue(),
+                      t.getValue().getDouble().doubleValue(), false)));
             }
             else if (stack.peek().getType() == Token.Types.EXPLODING_DICE) {
               stack.pop();
-              stack.push(new Token(Token.Types.CONST,rollDice(stack.pop().getValue().getDouble().doubleValue(),t.getValue().getDouble().doubleValue(),true)));
+              stack.push(new Token(Token.Types.CONST,
+                  rollDice(stack.pop().getValue().getDouble().doubleValue(),
+                      t.getValue().getDouble().doubleValue(), true)));
             }
             else {
               throw new Exception();
@@ -354,7 +401,7 @@ public class ParseTree2 {
       }
       else if (t.getType() == Token.Types.DICE || t.getType() == Token.Types.EXPLODING_DICE) {
         if (stack.empty()) {
-          stack.push(new Token(Token.Types.CONST,1.0));
+          stack.push(new Token(Token.Types.CONST, 1.0));
           stack.push(t);
         }
         else {
@@ -385,11 +432,13 @@ public class ParseTree2 {
       passDice.add(stack.pop());
     }
     DEBUG("pass Dice " + passDice.toString());
-    if (!stack.empty()) { throw new Exception(); }
+    if (!stack.empty()) {
+      throw new Exception();
+    }
 
     return passDice;
   }
-  
+
   private TokenCollection evaluateFactorials(TokenCollection TC) throws Exception {
 
     // Factorial pass
@@ -417,7 +466,7 @@ public class ParseTree2 {
             temp = Double.POSITIVE_INFINITY;
           }
           else {
-            for (int y = 1; y <= (int)l; y++) { 
+            for (int y = 1; y <= (int) l; y++) {
               temp *= y;
               if (Double.isInfinite(temp) || Double.isNaN(temp)) {
                 break;
@@ -425,7 +474,7 @@ public class ParseTree2 {
             }
           }
           stack.pop();
-          pass3.add(new Token(Token.Types.CONST,temp));
+          pass3.add(new Token(Token.Types.CONST, temp));
         }
       }
       else {
@@ -445,7 +494,7 @@ public class ParseTree2 {
     DEBUG("pass 3 " + pass3.toString());
     return pass3;
   }
-  
+
   private TokenCollection collapseNegations(TokenCollection TC) throws Exception {
 
     // Collapse negatives pass
@@ -469,12 +518,9 @@ public class ParseTree2 {
           }
         }
       }
-      else if (t.getType() == Token.Types.EXP
-          || t.getType() == Token.Types.DIV
-          || t.getType() == Token.Types.MULT
-          || t.getType() == Token.Types.PLUS
-          || t.getType() == Token.Types.MOD
-      ) {
+      else if (t.getType() == Token.Types.EXP || t.getType() == Token.Types.DIV
+          || t.getType() == Token.Types.MULT || t.getType() == Token.Types.PLUS
+          || t.getType() == Token.Types.MOD) {
         if (stack.empty()) {
           stack.push(t);
         }
@@ -500,7 +546,7 @@ public class ParseTree2 {
           else {
             pass4.add(stack.pop());
           }
-          pass4.add(new Token(Token.Types.CONST,val));
+          pass4.add(new Token(Token.Types.CONST, val));
         }
       }
       else {
@@ -508,10 +554,12 @@ public class ParseTree2 {
       }
     }
     DEBUG("pass 4 " + pass4.toString());
-    if (!stack.empty()) { throw new Exception(); }
+    if (!stack.empty()) {
+      throw new Exception();
+    }
     return pass4;
   }
-  
+
   private TokenCollection evaluateExponents(TokenCollection TC) throws Exception {
 
     // Exponent pass
@@ -544,10 +592,10 @@ public class ParseTree2 {
           }
           if (stack.peek().getType() == Token.Types.EXP) {
             stack.pop();
-            double power = t.getValue().getDouble() * (negate?-1.0:1.0);
+            double power = t.getValue().getDouble() * (negate ? -1.0 : 1.0);
             double val = Math.pow(stack.pop().getValue().getDouble(), power);
-            stack.push(new Token(Token.Types.CONST,val));
-          } 
+            stack.push(new Token(Token.Types.CONST, val));
+          }
           else {
             pass5.add(stack.pop());
             stack.push(t);
@@ -562,7 +610,7 @@ public class ParseTree2 {
           if (stack.peek().getType() == Token.Types.EXP) {
             stack.push(t);
           }
-          else if (stack.peek().getType() == Token.Types.NEG){
+          else if (stack.peek().getType() == Token.Types.NEG) {
             stack.pop();
           }
           else if (stack.peek().getType() == Token.Types.CONST) {
@@ -590,10 +638,12 @@ public class ParseTree2 {
       pass5.add(stack.pop());
     }
     DEBUG("pass 5 " + pass5.toString());
-    if (!stack.empty()) { throw new Exception(); }
+    if (!stack.empty()) {
+      throw new Exception();
+    }
     return pass5;
   }
-  
+
   private TokenCollection evaluateTerms(TokenCollection TC) throws Exception {
 
     // multiplication pass
@@ -607,32 +657,31 @@ public class ParseTree2 {
         }
         else {
           if (stack.peek().getType() == Token.Types.CONST) {
-            double val = (Double)stack.pop().getValue().getDouble();
-            val *= (Double)t.getValue().getDouble();
-            stack.push(new Token(Token.Types.CONST,val));
+            double val = (Double) stack.pop().getValue().getDouble();
+            val *= (Double) t.getValue().getDouble();
+            stack.push(new Token(Token.Types.CONST, val));
           }
           else if (stack.peek().getType() == Token.Types.MULT) {
             stack.pop();
-            double val = (Double)stack.pop().getValue().getDouble();   
-            val *= (Double)t.getValue().getDouble();
-            stack.push(new Token(Token.Types.CONST,val));                     
+            double val = (Double) stack.pop().getValue().getDouble();
+            val *= (Double) t.getValue().getDouble();
+            stack.push(new Token(Token.Types.CONST, val));
           }
           else if (stack.peek().getType() == Token.Types.DIV) {
             stack.pop();
-            double val = (Double)stack.pop().getValue().getDouble();   
-            val /= (Double)t.getValue().getDouble();
-            stack.push(new Token(Token.Types.CONST,val));   
+            double val = (Double) stack.pop().getValue().getDouble();
+            val /= (Double) t.getValue().getDouble();
+            stack.push(new Token(Token.Types.CONST, val));
           }
           else if (stack.peek().getType() == Token.Types.MOD) {
             stack.pop();
-            double val = (Double)stack.pop().getValue().getDouble();   
-            val %= (Double)t.getValue().getDouble();
-            stack.push(new Token(Token.Types.CONST,val));  
+            double val = (Double) stack.pop().getValue().getDouble();
+            val %= (Double) t.getValue().getDouble();
+            stack.push(new Token(Token.Types.CONST, val));
           }
         }
       }
-      else if (t.getType() == Token.Types.MULT
-          || t.getType() == Token.Types.DIV
+      else if (t.getType() == Token.Types.MULT || t.getType() == Token.Types.DIV
           || t.getType() == Token.Types.MOD) {
         if (stack.empty()) {
           throw new Exception();
@@ -665,10 +714,12 @@ public class ParseTree2 {
       pass6.add(stack.pop());
     }
     DEBUG("pass 6 " + pass6.toString());
-    if (!stack.empty()) { throw new Exception(); }
+    if (!stack.empty()) {
+      throw new Exception();
+    }
     return pass6;
   }
-  
+
   private TokenCollection evaluateAddition(TokenCollection TC) throws Exception {
 
     // Addition pass
@@ -686,9 +737,9 @@ public class ParseTree2 {
           }
           else {
             stack.pop();
-            double val = (Double)stack.pop().getValue().getDouble();   
-            val += (Double)t.getValue().getDouble();
-            stack.push(new Token(Token.Types.CONST,val));   
+            double val = (Double) stack.pop().getValue().getDouble();
+            val += (Double) t.getValue().getDouble();
+            stack.push(new Token(Token.Types.CONST, val));
           }
         }
       }
@@ -712,7 +763,9 @@ public class ParseTree2 {
     if (!stack.empty() && stack.peek().getType() == Token.Types.CONST) {
       pass7.add(stack.pop());
     }
-    if (!stack.empty()) { throw new Exception(); }
+    if (!stack.empty()) {
+      throw new Exception();
+    }
     return pass7;
   }
 }

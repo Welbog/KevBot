@@ -9,16 +9,18 @@ import ca.welbog.kevbot.communication.Documentation;
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
+import ca.welbog.kevbot.core.Responder;
+import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.DoubleFile;
 import ca.welbog.kevbot.persist.DoubleStorage;
 import ca.welbog.kevbot.service.Service;
 
 public class SeenResponder implements Responder {
-  
+
   DoubleStorage db;
-  
+
   public SeenResponder() {
-    db = new DoubleFile("seena.txt","seenb.txt");
+    db = new DoubleFile("seena.txt", "seenb.txt");
   }
 
   @Override
@@ -27,13 +29,12 @@ public class SeenResponder implements Responder {
     aliases.add("seen");
     return new Documentation(
         "Syntax: seen <USERNAME>\nFind the last time a user said something, and what was said.",
-        aliases
-    );
+        aliases);
   }
 
   @Override
   public Response getResponse(Request r) {
-    
+
     // First, always update the seen database.
     String who = r.getSender();
     String when = new Date().toString();
@@ -41,11 +42,8 @@ public class SeenResponder implements Responder {
     String what = r.getMessage();
     db.addOver(who, who + " was last seen " + when + " in " + where + " saying \"" + what + "\"");
     db.write();
-    
-    if (
-      r.canReply() &&
-      r.getMessage().matches("(?i)^seen\\s+\\S+.*$")
-    ) {
+
+    if (r.canReply() && r.getMessage().matches("(?i)^seen\\s+\\S+.*$")) {
       StringTokenizer tokenizer = new StringTokenizer(r.getMessage());
       tokenizer.nextToken(); // Remove "seen"
       String user = tokenizer.nextToken();
@@ -57,10 +55,10 @@ public class SeenResponder implements Responder {
       user.replaceAll("\"$", "");
       String reply = db.getReply(user);
       if (reply != null && !reply.trim().equals("")) {
-        return new Response(r.getChannel(),reply,Type.MESSAGE);
+        return new Response(r.getChannel(), reply, Type.MESSAGE);
       }
     }
-    
+
     return null;
   }
 
@@ -78,4 +76,26 @@ public class SeenResponder implements Responder {
     db.close();
   }
 
+  private boolean isAdminOnly = false;
+  private ResponderType responderType = ResponderType.CORE;
+
+  @Override
+  public boolean isAdminOnly() {
+    return isAdminOnly;
+  }
+
+  @Override
+  public void setAdminOnly(boolean value) {
+    isAdminOnly = value;
+  }
+
+  @Override
+  public ResponderType getResponderType() {
+    return responderType;
+  }
+
+  @Override
+  public void setResponderType(ResponderType type) {
+    responderType = type;
+  }
 }

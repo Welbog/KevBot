@@ -8,6 +8,8 @@ import ca.welbog.kevbot.communication.Documentation;
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
+import ca.welbog.kevbot.core.Responder;
+import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.service.Service;
 
 public class SayActResponder implements Responder {
@@ -19,14 +21,13 @@ public class SayActResponder implements Responder {
     aliases.add("say");
     return new Documentation(
         "Syntax: say|act <CHANNEL|USERNAME> <MESSAGE>\nSend a message or emote as this bot to a channel or username.",
-        aliases
-    );
+        aliases);
   }
 
   @Override
   public Response getResponse(Request r) {
-    if (!r.getMessage().matches("(?i)^(say|act)\\s+\\S+\\s+\\S+.*")) { 
-      return null; 
+    if (!r.getMessage().matches("(?i)^(say|act)\\s+\\S+\\s+\\S+.*")) {
+      return null;
     }
     StringTokenizer tokenizer = new StringTokenizer(r.getMessage());
     String command = tokenizer.nextToken(); // Get rid of the "chgnick" part.
@@ -40,7 +41,7 @@ public class SayActResponder implements Responder {
     if (command.equalsIgnoreCase("say")) {
       type = Type.MESSAGE;
     }
-    return new Response(channel,message,type); 
+    return new Response(channel, message, type);
   }
 
   @Override
@@ -56,4 +57,26 @@ public class SayActResponder implements Responder {
   public void close() {
   }
 
+  private boolean isAdminOnly = false;
+  private ResponderType responderType = ResponderType.CORE;
+
+  @Override
+  public boolean isAdminOnly() {
+    return isAdminOnly;
+  }
+
+  @Override
+  public void setAdminOnly(boolean value) {
+    isAdminOnly = value;
+  }
+
+  @Override
+  public ResponderType getResponderType() {
+    return responderType;
+  }
+
+  @Override
+  public void setResponderType(ResponderType type) {
+    responderType = type;
+  }
 }

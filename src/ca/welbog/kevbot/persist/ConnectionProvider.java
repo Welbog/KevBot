@@ -17,17 +17,18 @@ public class ConnectionProvider implements Service {
   private Connection conn = null;
   private Date lastConnectionCreationTime = new Date();
   private static final Long TIMEOUT_IN_MILLISECONDS = 600000L; // 10 minutes
-	private static final String configFile = "kevbot.properties";
+  private static final String configFile = "kevbot.properties";
 
-  // This'll look something like "jdbc:mysql://localhost:port/kevbot?user=kevbot&password=something"
-	private final String connectionString;
-  
+  // This'll look something like
+  // "jdbc:mysql://localhost:port/kevbot?user=kevbot&password=something"
+  private final String connectionString;
+
   public ConnectionProvider() throws IOException {
-		Properties config = new Properties();
-		InputStream input = new FileInputStream(configFile);
-		config.load(input);
-		input.close();
-		connectionString = config.getProperty("connectionString");
+    Properties config = new Properties();
+    InputStream input = new FileInputStream(configFile);
+    config.load(input);
+    input.close();
+    connectionString = config.getProperty("connectionString");
     ca.welbog.kevbot.log.Logger.debugStatic("Connection provider online.");
   }
 
@@ -45,7 +46,7 @@ public class ConnectionProvider implements Service {
           System.out.println("Creating new MySQL connection.");
 
           try {
-            Class.forName ("com.mysql.jdbc.Driver").newInstance ();
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
           }
           catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
@@ -60,16 +61,16 @@ public class ConnectionProvider implements Service {
       }
     }
     catch (SQLException ex) {
-        System.out.println("SQLException: " + ex.getMessage());
-        System.out.println("SQLState: " + ex.getSQLState());
-        System.out.println("VendorError: " + ex.getErrorCode());
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
     }
     return false;
   }
-  
+
   public static void dispose(Statement s, ResultSet r) {
     try {
       if (r != null) {
@@ -89,7 +90,7 @@ public class ConnectionProvider implements Service {
       System.out.println("Exception: " + e.getMessage());
     }
   }
-  
+
   @Override
   public synchronized void close() {
     try {
@@ -108,7 +109,6 @@ public class ConnectionProvider implements Service {
     }
     conn = null;
   }
-  
 
   @Override
   public synchronized Connection getObject() {

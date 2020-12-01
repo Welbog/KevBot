@@ -69,7 +69,7 @@ public class VariableHash {
     }
     return instance;
   }
-  
+
   private void dumpVariables() {
     try {
       // TODO Move this to SQL at some point.
@@ -82,7 +82,7 @@ public class VariableHash {
       e.printStackTrace();
     }
   }
-  
+
   private void slurpVariables() {
     try {
       File file = new File(VARIABLE_HASH_FILENAME);

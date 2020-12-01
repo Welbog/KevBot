@@ -3,11 +3,13 @@ package ca.welbog.kevbot.responder;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.welbog.kevbot.communication.AddressingMode;
 import ca.welbog.kevbot.communication.Documentation;
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
-import ca.welbog.kevbot.communication.StatefulBot;
+import ca.welbog.kevbot.core.Responder;
+import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.service.Service;
 
 public class AddressingModeResponder implements Responder {
@@ -18,8 +20,7 @@ public class AddressingModeResponder implements Responder {
     aliases.add("quiet");
     return new Documentation(
         "Syntax: quiet\nToggle quiet mode.\nNOTE: when this bot is in quiet mode it will reply only to addresses.\nIt has a separate mode for every channel it occupies.\nSee also: addressing, status.",
-        aliases
-    );
+        aliases);
   }
 
   @Override
@@ -28,10 +29,10 @@ public class AddressingModeResponder implements Responder {
     if (!body.matches("^quiet$")) {
       return null;
     }
-    
-    StatefulBot.Mode newMode = StatefulBot.Mode.STANDARD;
-    if (r.getMode() == StatefulBot.Mode.STANDARD) {
-      newMode = StatefulBot.Mode.QUIET;
+
+    AddressingMode newMode = AddressingMode.STANDARD;
+    if (r.getMode() == AddressingMode.STANDARD) {
+      newMode = AddressingMode.QUIET;
     }
     return new Response(r.getChannel(), newMode.name(), Type.MODE);
   }
@@ -47,7 +48,30 @@ public class AddressingModeResponder implements Responder {
   }
 
   @Override
-  public void close() {    
+  public void close() {
+  }
+
+  private boolean isAdminOnly = false;
+  private ResponderType responderType = ResponderType.CORE;
+
+  @Override
+  public boolean isAdminOnly() {
+    return isAdminOnly;
+  }
+
+  @Override
+  public void setAdminOnly(boolean value) {
+    isAdminOnly = value;
+  }
+
+  @Override
+  public ResponderType getResponderType() {
+    return responderType;
+  }
+
+  @Override
+  public void setResponderType(ResponderType type) {
+    responderType = type;
   }
 
 }

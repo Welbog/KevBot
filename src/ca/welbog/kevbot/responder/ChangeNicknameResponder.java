@@ -8,6 +8,8 @@ import ca.welbog.kevbot.communication.Documentation;
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
+import ca.welbog.kevbot.core.Responder;
+import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.service.Service;
 
 public class ChangeNicknameResponder implements Responder {
@@ -16,10 +18,8 @@ public class ChangeNicknameResponder implements Responder {
   public Documentation getDocumentation() {
     List<String> aliases = new ArrayList<String>();
     aliases.add("chgnick");
-    return new Documentation(
-        "Syntax: chgnick <NEWNICK>\nChange this bot's nickname to <NEWNICK>.",
-        aliases
-    );
+    return new Documentation("Syntax: chgnick <NEWNICK>\nChange this bot's nickname to <NEWNICK>.",
+        aliases);
   }
 
   @Override
@@ -44,7 +44,29 @@ public class ChangeNicknameResponder implements Responder {
 
   @Override
   public void close() {
-    
+
   }
 
+  private boolean isAdminOnly = false;
+  private ResponderType responderType = ResponderType.CORE;
+
+  @Override
+  public boolean isAdminOnly() {
+    return isAdminOnly;
+  }
+
+  @Override
+  public void setAdminOnly(boolean value) {
+    isAdminOnly = value;
+  }
+
+  @Override
+  public ResponderType getResponderType() {
+    return responderType;
+  }
+
+  @Override
+  public void setResponderType(ResponderType type) {
+    responderType = type;
+  }
 }

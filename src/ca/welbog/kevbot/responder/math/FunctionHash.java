@@ -27,20 +27,31 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * @author Inferno
  */
 public class FunctionHash {
-  
-  public static class BuiltInFunctionSignatureMap extends ConcurrentHashMap<String, BuiltInFunction> {}
-  public static class UserFunctionSignatureMap extends ConcurrentHashMap<String, UserFunction> {}
-  public static class BuiltInFunctionNameMap extends ConcurrentHashMap<String, BuiltInFunctionSignatureMap> {}
-  public static class UserFunctionNameMap extends ConcurrentHashMap<String, UserFunctionSignatureMap> {}
-  
+
+  public static class BuiltInFunctionSignatureMap
+      extends ConcurrentHashMap<String, BuiltInFunction> {
+  }
+
+  public static class UserFunctionSignatureMap extends ConcurrentHashMap<String, UserFunction> {
+  }
+
+  public static class BuiltInFunctionNameMap
+      extends ConcurrentHashMap<String, BuiltInFunctionSignatureMap> {
+  }
+
+  public static class UserFunctionNameMap
+      extends ConcurrentHashMap<String, UserFunctionSignatureMap> {
+  }
+
   private BuiltInFunctionNameMap builtInFunctions;
   private UserFunctionNameMap userFunctions;
   private static final String FUNCTION_HASH_FILENAME = "functions.txt";
-  
-  // TODO: I'm going to need to separate out the built-in functions from the non-built-in functions
+
+  // TODO: I'm going to need to separate out the built-in functions from the
+  // non-built-in functions
   // so that the ObjectMapper has a uniform class that it needs to de/serialize.
-  // Also need to solve some way for names (like "floor") 
-  //   to map to multiple signatures (like "floor1", "floor2"). 
+  // Also need to solve some way for names (like "floor")
+  // to map to multiple signatures (like "floor1", "floor2").
   // Maybe a structure that's Map<String, Map<String, Function>>?
   // But these things will need type aliases because of type erasure. :(
   // Maybe I'll have to write a de/serializer for Functions?
@@ -74,21 +85,23 @@ public class FunctionHash {
     putFunction(new FunctionRound1());
     putFunction(new FunctionRound2());
   }
-  
+
   private void putFunction(BuiltInFunction function) {
     String name = function.name;
     String signature = function.signature;
-    Map<String, BuiltInFunction> signatureMap = builtInFunctions.computeIfAbsent(name, x -> new BuiltInFunctionSignatureMap());
+    Map<String, BuiltInFunction> signatureMap = builtInFunctions.computeIfAbsent(name,
+        x -> new BuiltInFunctionSignatureMap());
     signatureMap.putIfAbsent(signature, function);
   }
-  
+
   private void putFunction(UserFunction function) {
     String name = function.name;
     String signature = function.signature;
-    Map<String, UserFunction> signatureMap = userFunctions.computeIfAbsent(name, x -> new UserFunctionSignatureMap());
+    Map<String, UserFunction> signatureMap = userFunctions.computeIfAbsent(name,
+        x -> new UserFunctionSignatureMap());
     signatureMap.put(signature, function);
   }
-  
+
   private Optional<Function> getFunction(String name, String signature) {
     Map<String, BuiltInFunction> builtInFunctionSignatures = builtInFunctions.get(name);
     if (builtInFunctionSignatures != null) {
@@ -100,7 +113,7 @@ public class FunctionHash {
     }
     return Optional.empty();
   }
-  
+
   private Collection<Function> getFunctions(String name) {
     Map<String, BuiltInFunction> builtInFunctionSignatures = builtInFunctions.get(name);
     if (builtInFunctionSignatures != null) {
@@ -112,11 +125,11 @@ public class FunctionHash {
     }
     return Collections.emptyList();
   }
-  
+
   public boolean containsName(String name) {
     return !getFunctions(name).isEmpty();
   }
-  
+
   public boolean isBuiltIn(String name) {
     return builtInFunctions.containsKey(name);
   }
@@ -191,9 +204,11 @@ public class FunctionHash {
       else {
         // replace the parameters with their input constants
         TokenCollection expression = f.get().getExpression();
-         //System.out.println("Original expression for signature " + signature + ": "+expression.toString());
+        // System.out.println("Original expression for signature " + signature +
+        // ": "+expression.toString());
         replaceParameters(tokens, expression);
-         //System.out.println("Expression with parameters replaced: "+expression.toString());
+        // System.out.println("Expression with parameters replaced:
+        // "+expression.toString());
         return expression;
       }
     }
@@ -209,13 +224,13 @@ public class FunctionHash {
     for (int i = 0; i < expression.size(); i++) {
       Token currentToken = expression.getToken(i);
       if (currentToken.getType() == Token.Types.PARAM) {
-        int paramIndex =  currentToken.getValue().getInteger();
+        int paramIndex = currentToken.getValue().getInteger();
         expression.replaceToken(i, tokens.get(paramIndex));
       }
       if (currentToken.getType() == Token.Types.SUB) {
-        //System.out.println("INFERNO1: " + currentToken);
-        //System.out.println("INFERNO2: " + tokens);
-        //System.out.println("INFERNO3: " + expression);
+        // System.out.println("INFERNO1: " + currentToken);
+        // System.out.println("INFERNO2: " + tokens);
+        // System.out.println("INFERNO3: " + expression);
         replaceParameters(tokens, currentToken.getValue().getTokenCollection());
       }
     }
@@ -245,7 +260,6 @@ public class FunctionHash {
     return instance;
   }
 
-  
   private void dumpFunctions() {
     try {
       // TODO Move this to SQL at some point.
@@ -258,7 +272,7 @@ public class FunctionHash {
       e.printStackTrace();
     }
   }
-  
+
   private void slurpFunctions() {
     try {
       File file = new File(FUNCTION_HASH_FILENAME);
@@ -497,24 +511,41 @@ public class FunctionHash {
       return Math.round(param1 / precision) * precision;
     }
   }
-  
+
   private static class UserFunction extends Function {
 
     public UserFunction(String n, String s, TokenCollection v) {
       super(n, s, v);
     }
-    
+
     public UserFunction() {
       super("", "", null);
     }
-    
-    public String getName() { return name; }
-    public String getSignature() { return signature; }
-    public TokenCollection getExpression() { return value.clone(); }
-    public void setName(String name) { this.name = name; }
-    public void setSignature(String signature) { this.signature = signature; }
-    public void setExpression(TokenCollection collection) { this.value = collection; }
-    
+
+    public String getName() {
+      return name;
+    }
+
+    public String getSignature() {
+      return signature;
+    }
+
+    public TokenCollection getExpression() {
+      return value.clone();
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public void setSignature(String signature) {
+      this.signature = signature;
+    }
+
+    public void setExpression(TokenCollection collection) {
+      this.value = collection;
+    }
+
   }
 
   private static class BuiltInFunction extends Function {

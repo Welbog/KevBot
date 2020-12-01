@@ -1,8 +1,7 @@
-package ca.welbog.kevbot.communication.http;
+package ca.welbog.kevbot.client.http;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,28 +17,29 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import ca.welbog.kevbot.communication.AddressingMode;
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Request.Type;
 import ca.welbog.kevbot.communication.Response;
-import ca.welbog.kevbot.communication.StatefulBot;
-import ca.welbog.kevbot.communication.StatefulBot.Mode;
 
 public class MessageSerializer {
-  
+
   ObjectMapper mapper;
-  
+
   public MessageSerializer() {
     mapper = new ObjectMapper();
     mapper.enable(SerializationFeature.INDENT_OUTPUT);
     mapper.configure(Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
   }
-  
-  public Request getRequest(String json) throws JsonParseException, JsonMappingException, IOException {
+
+  public Request getRequest(String json)
+      throws JsonParseException, JsonMappingException, IOException {
     return mapper.readValue(json, Request.class);
   }
-  
+
   public Request getRequestFromGETPath(URI path) {
-    Request request = new Request("HTTP", "HTTP", "HTTP", "", "KevBot", Mode.STANDARD, Type.MESSAGE);
+    Request request = new Request("HTTP", "HTTP", "HTTP", "", "KevBot", AddressingMode.STANDARD,
+        Type.MESSAGE);
     Map<String, List<String>> map = splitQuery(path);
     boolean foundSomething = false;
     if (map.containsKey("medium")) {
@@ -59,22 +59,24 @@ public class MessageSerializer {
       request.setNickname(map.get("nickname").get(0));
     }
     if (map.containsKey("mode")) {
-      request.setMode(StatefulBot.Mode.valueOf(map.get("mode").get(0)));
+      request.setMode(AddressingMode.valueOf(map.get("mode").get(0)));
     }
     if (map.containsKey("type")) {
       request.setType(Request.Type.valueOf(map.get("type").get(0)));
     }
-    if (!foundSomething) { return null; }
+    if (!foundSomething) {
+      return null;
+    }
     return request;
   }
-  
+
   private Map<String, List<String>> splitQuery(URI url) {
     if (url == null || url.getQuery() == null || url.getQuery().trim().isEmpty()) {
       return Collections.emptyMap();
     }
-    return Arrays.stream(url.getQuery().split("&"))
-      .map(this::splitQueryParameter)
-      .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+    return Arrays.stream(url.getQuery().split("&")).map(this::splitQueryParameter)
+        .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new,
+            Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
   }
 
   private SimpleImmutableEntry<String, String> splitQueryParameter(String it) {
@@ -83,15 +85,16 @@ public class MessageSerializer {
     final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
     return new SimpleImmutableEntry<>(key, value);
   }
-  
+
   public String getJSON(Request request) throws JsonProcessingException {
     return mapper.writeValueAsString(request);
   }
-  
-  public Response getResponse(String json) throws JsonParseException, JsonMappingException, IOException {
+
+  public Response getResponse(String json)
+      throws JsonParseException, JsonMappingException, IOException {
     return mapper.readValue(json, Response.class);
   }
-  
+
   public String getJSON(Response response) throws JsonProcessingException {
     return mapper.writeValueAsString(response);
   }

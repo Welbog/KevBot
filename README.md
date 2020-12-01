@@ -54,8 +54,10 @@ In no particular order:
 * ~~Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)~~
 * Move to Spring or some other dependency-injection tool (instead of the shitty one I made myself).
 * Add security to the KevBot protocol somehow.
-* Break the codebase out better (client vs server vs intermediate libraries containing message objects, plugin interfaces, etc).
+* ~~Break the codebase out better (client vs server vs intermediate libraries containing message objects, plugin interfaces, etc).~~
 * A feature for spontaneous communication, though I've personally wanted to avoid it. This would be implemented as a separate HTTP URL for polling new messages, by client. This could enable something like someone in IRC sending a message to someone in Discord using the `say` command.
+  * The basic idea here would be for the server-side to have a queue of messages, and the client would poll said queue periodically and forward them to wherever it needs to go. This needs a reasonable mechanism for specifying where messages need to go, as well as a server-side map of queues by client.
+  * Then, for the different clients, they can process it however is appropriate for that chat system. Discord, for example, probably has an API to call to send a message to a channel, to a specific user, etc.
 * Javadoc for at least the most important stuff (possibly auto-generated from the Documentation objects?) (possibly auto-generating part of this README from said Documentation objects?)
 * Maybe add support for Google Hangouts (or whatever they will inevitably replace it with)?
 * Improve Echo support.
@@ -73,9 +75,10 @@ Very haphazard.
 * echo: echo client
 * src: server
   * ca/welbog/kevbot: Base KevBot class for launching the server, as well as its core processing loop.
-    * client: various clients, none of which do anything
-    * communication: base classes for DTOs KevBot uses, as well as a bare HTTP client that knows how to talk to the server.
+    * client: a base HTTP client that can be used to build specific adapters, if those adapters are Java-based (which at this time none are).
+    * communication: base classes for DTOs KevBot uses
     * configuration: my terrible DI "framework".
+    * core: KevBot's core processing loop and interfaces that make it go brrrrr
     * http: Server's HTTP entry point.
     * log: my terrible logging "framework".
     * persist: file- and SQL-based storage utilities.
