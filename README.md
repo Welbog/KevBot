@@ -47,10 +47,10 @@ Logs will be located in
 What does the future hold for KevBot?
 
 In no particular order:
-* Unit testing
+* Unit testing (the first one was written 2020-12-02 woohoo!)
 * Integration testing
-* Do an info-dump of KevBot's Documentation objects into the github-provided wiki, ideally with more elaborate examples, and a link to said wiki from KevBot's help messages.
-  * Especially examples of the more involved factoids, like the Hogwarts points, math recursion like `$triangle` and pattern matching like `I $a $b`.
+* ~~Do an info-dump of KevBot's Documentation objects into the github-provided wiki, ideally with more elaborate examples,~~ and a link to said wiki from KevBot's help messages. Now that there's a wiki, link to that and keep the inline help to just the basics, otherwise some of the help messages are tl;dr.
+  * ~~Especially examples of the more involved factoids, like the Hogwarts points, math recursion like `$triangle` and pattern matching like `I $a $b`.~~
 * Support Discord features (@, unique user identifiers, usernames with spaces in them, etc)
   * Drop support for JOIN and LEAVE, or modify them heavily for Discord since it works very differently from IRC.
 * ~~Move to Maven or some other dependency-management tool (for MySQL in the short term, Spring or something in the longer term)~~
@@ -60,7 +60,7 @@ In no particular order:
 * A feature for spontaneous communication, though I've personally wanted to avoid it. This would be implemented as a separate HTTP URL for polling new messages, by client. This could enable something like someone in IRC sending a message to someone in Discord using the `say` command.
   * The basic idea here would be for the server-side to have a queue of messages, and the client would poll said queue periodically and forward them to wherever it needs to go. This needs a reasonable mechanism for specifying where messages need to go, as well as a server-side map of queues by client.
   * Then, for the different clients, they can process it however is appropriate for that chat system. Discord, for example, probably has an API to call to send a message to a channel, to a specific user, etc.
-* Javadoc for at least the most important stuff (possibly auto-generated from the Documentation objects?) (possibly auto-generating part of this README from said Documentation objects?)
+* Javadoc for at least the most important stuff (possibly auto-generated from the Documentation objects?) ~~(possibly auto-generating part of this README from said Documentation objects?) Nah, that's silly.~~
 * Maybe add support for Google Hangouts (or whatever they will inevitably replace it with)?
 * Improve Echo support.
 * Add SQL transactions & move things off of flat files and into SQL & ~~add setup so that when KevBot detects a table is missing it can create it (or at least a set-up script).~~
