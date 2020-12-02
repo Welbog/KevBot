@@ -58,13 +58,6 @@ public class ShowNotableResponder implements Responder {
 
     return new Response(r.getChannel(), s, Type.MESSAGE);
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    ArrayList<String> services = new ArrayList<String>();
-    services.add("SQL");
-    return services;
-  }
   
   public void setOrder2ByDatabase(SQLWeightedMarkovByName database) {
     markovby2 = database;

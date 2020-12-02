@@ -33,11 +33,6 @@ public class ChangeNicknameResponder implements Responder {
   }
 
   @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
-
-  @Override
   public void close() {
 
   }

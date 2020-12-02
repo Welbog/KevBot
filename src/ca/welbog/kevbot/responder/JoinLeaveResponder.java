@@ -44,11 +44,6 @@ public class JoinLeaveResponder implements Responder {
       return new Response(null, channel, Type.LEAVE);
     }
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
   
   @Override
   public void close() {

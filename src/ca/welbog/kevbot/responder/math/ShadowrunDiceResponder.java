@@ -96,11 +96,6 @@ public class ShadowrunDiceResponder implements Responder {
         r.getSender() + ": " + shadowRunString + ", rolls: " + diceRollString + explodeResponse,
         Type.MESSAGE);
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
   
   @Override
   public void close() {

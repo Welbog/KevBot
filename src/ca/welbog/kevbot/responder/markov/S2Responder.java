@@ -64,13 +64,6 @@ public class S2Responder implements Responder {
     return new Response(r.getChannel(), result, Type.MESSAGE);
   }
 
-  @Override
-  public List<String> getRequiredServiceNames() {
-    ArrayList<String> services = new ArrayList<String>();
-    services.add("SQL");
-    return services;
-  }
-
   public void setS2Database(SQLStrangeMarkovByName database) {
     markovby2 = database;
   }

@@ -155,13 +155,6 @@ public class ReplyListenerResponder implements Responder {
       }
     }
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    ArrayList<String> services = new ArrayList<String>();
-    services.add("SQL");
-    return services;
-  }
   
   public void setFactoidDatabase(DoubleSQL database) {
     replies = database;

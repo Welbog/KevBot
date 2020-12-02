@@ -185,11 +185,6 @@ public class HelpResponder implements Responder {
   public Documentation getDocumentation() {
     return null;
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    return new ArrayList<String>();
-  }
   
   @Override
   public void close() {

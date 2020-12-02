@@ -60,11 +60,6 @@ public class SeenResponder implements Responder {
 
     return null;
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
   
   @Override
   public void close() {

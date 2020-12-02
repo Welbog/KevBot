@@ -44,11 +44,6 @@ public class SayActResponder implements Responder {
   }
 
   @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
-
-  @Override
   public void close() {
   }
 

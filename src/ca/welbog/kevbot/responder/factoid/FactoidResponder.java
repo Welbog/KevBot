@@ -70,13 +70,6 @@ public class FactoidResponder implements Responder {
       return new Response(r.getChannel(), factoid, Type.MESSAGE);
     }
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    ArrayList<String> services = new ArrayList<String>();
-    services.add("SQL");
-    return services;
-  }
   
   public void setFactoidDatabase(DoubleSQL database) {
     replies = database;

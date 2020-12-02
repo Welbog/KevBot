@@ -109,11 +109,6 @@ public class MathResponder implements Responder {
     }
     return new Response(r.getChannel(), output, Type.MESSAGE);
   }
-
-  @Override
-  public List<String> getRequiredServiceNames() {
-    return null;
-  }
   
   @Override
   public void close() {

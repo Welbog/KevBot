@@ -11,8 +11,6 @@ public interface Responder {
 
   public Response getResponse(Request r);
 
-  public List<String> getRequiredServiceNames();
-
   public void close();
 
   public boolean isAdminOnly();
