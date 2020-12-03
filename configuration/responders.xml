@@ -6,13 +6,22 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+
+  <!-- TODO: I probably want a mechanism that defaults dependencies to singletons unless they're specified,
+  that way I get my nice unit testing but can keep this file pretty clean without resorting to autowiring. -->
+  
+  <!-- TODO: Also, should make everything use the same semantics (either constructor injection 
+  or property injection, not both. Probably want constructor injection.) -->
+
 	<!-- Order matters here -->
 	<util:list id="responders" value-type="ca.welbog.kevbot.core.Responder">
 		
 		<!-- Admin-only core commands -->
+		<!-- Not supported at the moment by any client 
 		<ref bean="chgnickResponder"/>
 		<ref bean="sayActResponder"/>
 		<ref bean="joinLeaveResponder"/>
+		-->
 		<ref bean="rebuildNotableUsersResponder"/>
 		
 		<!-- Other core commands -->
@@ -71,9 +80,15 @@
 	</bean>
 	
 	<bean name="addressingModeResponder" class="ca.welbog.kevbot.responder.AddressingModeResponder"/>
-	<bean name="seenResponder" class="ca.welbog.kevbot.responder.SeenResponder"/>
-	<bean name="karmaResponder" class="ca.welbog.kevbot.responder.KarmaResponder"/>
-	<bean name="messagingResponder" class="ca.welbog.kevbot.responder.MessagingResponder"/>
+	<bean name="seenResponder" class="ca.welbog.kevbot.responder.SeenResponder">
+	  <constructor-arg ref="rahlFactory"/>
+	</bean>
+	<bean name="karmaResponder" class="ca.welbog.kevbot.responder.KarmaResponder">
+		<constructor-arg ref="rahlFactory"/>
+	</bean>
+	<bean name="messagingResponder" class="ca.welbog.kevbot.responder.MessagingResponder">
+		<constructor-arg ref="rahlFactory"/>
+	</bean>
 	<bean name="showNotableUsersResponder" class="ca.welbog.kevbot.responder.markov.ShowNotableResponder">
 		<property name="order2ByDatabase" ref="markov2ByDatabase"/>
 	</bean>

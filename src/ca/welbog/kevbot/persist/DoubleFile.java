@@ -38,6 +38,7 @@ public class DoubleFile implements DoubleStorage {
    * @param r
    *          The file from/into which replies will be read/stored (indexed).
    */
+  @Deprecated()
   public DoubleFile(String g, String r) {
     messageFile = g;
     replyFile = r;

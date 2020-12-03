@@ -13,13 +13,14 @@ import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
 import ca.welbog.kevbot.persist.DoubleFile;
 import ca.welbog.kevbot.persist.DoubleStorage;
+import ca.welbog.kevbot.persist.RAHLFactory;
 
 public class SeenResponder implements Responder {
 
   DoubleStorage db;
 
-  public SeenResponder() {
-    db = new DoubleFile("seena.txt", "seenb.txt");
+  public SeenResponder(RAHLFactory rahlFactory) {
+  	db = rahlFactory.createDoubleFile("seena.txt", "seenb.txt");
   }
 
   @Override

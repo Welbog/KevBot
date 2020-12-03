@@ -58,7 +58,8 @@ public class HelpResponder implements Responder {
       body = "KevBot's commands list (KevBot " + KevBot.VERSION + ")\n";
       body += commandList + "\n";
       body += "* indicates admin-only commands.\n";
-      body += "For more information about each command, type 'help <COMMAND>' where <COMMAND> is from the list above.";
+      body += "For more information about each command, type 'help <COMMAND>' where <COMMAND> is from the list above.\n";
+      body += "Please see https://github.com/Welbog/KevBot/wiki for detailed usage explanations and examples.";
     }
     else {
       body = "";

@@ -10,13 +10,15 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
+import ca.welbog.kevbot.log.Logger;
 import ca.welbog.kevbot.persist.KarmaFile;
+import ca.welbog.kevbot.persist.RAHLFactory;
 
 public class KarmaResponder implements Responder {
   private KarmaFile karma; // KarmaFile for karma.
 
-  public KarmaResponder() {
-    karma = new KarmaFile("karma.txt", "karmb.txt");
+  public KarmaResponder(RAHLFactory ralph) {
+    karma = ralph.createKarmaFile("karma.txt", "karmb.txt");
   }
 
   @Override
@@ -80,8 +82,7 @@ public class KarmaResponder implements Responder {
       // You can't change your own karma.
       return;
     }
-    ca.welbog.kevbot.log.Logger
-        .debugStatic("changeKarma(" + karma.getRealLine(word) + ", " + change + ");");
+    Logger.debugStatic("changeKarma(" + word + ", " + change + ");");
     karma.changeKarma(word, change);
     karma.write();
   }

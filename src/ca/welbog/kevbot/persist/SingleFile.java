@@ -35,6 +35,7 @@ public class SingleFile {
    * @param f
    *          The filename to be edited.
    */
+  @Deprecated
   public SingleFile(String f) {
     filename = f; // If you don't know what this does...
     lines = new RAHL(); // LEMONS!

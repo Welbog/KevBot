@@ -29,6 +29,7 @@ public class KarmaFile extends DoubleFile {
    * @param r
    *          The file to store the karma.
    */
+	@Deprecated
   public KarmaFile(String m, String r) {
     super(m, r);
   }

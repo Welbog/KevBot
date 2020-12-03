@@ -5,6 +5,7 @@ bin/**
 seen*
 lib/**
 *.messages
+messages.*
 functions.txt
 variables.txt
 admin.txt
@@ -15,6 +16,7 @@ discord/npm-debug.log
 discord/package-lock.json
 backup.sql.gz
 experimental/**
+karm*
 .classpath
 .project
 .settings/

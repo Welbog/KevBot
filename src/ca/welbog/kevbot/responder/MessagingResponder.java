@@ -12,13 +12,17 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
+import ca.welbog.kevbot.persist.RAHLFactory;
 import ca.welbog.kevbot.persist.SingleFile;
 
 public class MessagingResponder implements Responder {
   private SingleFile messages;
+  private RAHLFactory ralph;
 
-  public MessagingResponder() {
-    messages = new SingleFile("messages.txt");
+  public MessagingResponder(RAHLFactory ralph) {
+    this.ralph = ralph;
+    messages = ralph.createSingleFile("messages.txt");
+    System.out.println(messages);
   }
 
   @Override
@@ -50,10 +54,9 @@ public class MessagingResponder implements Responder {
         return new Response(r.getChannel(), "You do not have any messages.", Type.MESSAGE);
       }
       messages.delete(r.getSender());
-      SingleFile userMessages = new SingleFile(r.getSender() + ".messages"); // Find
-                                                                             // his
-                                                                             // message
-                                                                             // file.
+      
+      // Find their message file
+      SingleFile userMessages = ralph.createSingleFile(r.getSender() + ".messages"); 
       int i = 0;
       String currMessage = userMessages.getLine(i);
       StringTokenizer str;
@@ -93,10 +96,8 @@ public class MessagingResponder implements Responder {
       messages.add(target);
       messages.write();
 
-      SingleFile userMessages = new SingleFile(target + ".messages"); // Open a
-                                                                      // file
-                                                                      // for
-                                                                      // append.
+      // Open a file for append.
+      SingleFile userMessages = ralph.createSingleFile(target + ".messages"); 
       SimpleDateFormat format = new SimpleDateFormat("YYYYMMddHHmmss");
       Date t = new Date(); // Find the timestamp. The purpose is to create a
                            // long "string" of numbers.

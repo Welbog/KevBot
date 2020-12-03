@@ -11,7 +11,6 @@ import ca.welbog.kevbot.communication.Response;
 import ca.welbog.kevbot.communication.Response.Type;
 import ca.welbog.kevbot.core.Responder;
 import ca.welbog.kevbot.core.ResponderType;
-import ca.welbog.kevbot.persist.ConnectionProvider;
 import ca.welbog.kevbot.responder.factoid.DoubleSQL;
 import ca.welbog.kevbot.responder.markov.SQLWeightedMarkov;
 

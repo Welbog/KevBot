@@ -26,6 +26,8 @@
 		<constructor-arg ref="logger" />
 		<constructor-arg ref="responders" />
 	</bean>
+	
+	<bean name="rahlFactory" class="ca.welbog.kevbot.persist.RAHLFactory"/>
 
 	<bean name="sqlConnectionProvider" class="ca.welbog.kevbot.persist.ConnectionProvider" />
 	
