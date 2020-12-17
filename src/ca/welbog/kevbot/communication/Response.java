@@ -32,6 +32,15 @@ public class Response {
   }
 
   public String findFirstSubString() {
+    // TODO: Want this to return a Substring With Flags object, supporting syntax for indicating to the processor to take certain action.
+    // Examples: `subexpression`_lucsp
+    // l: force lowercase
+    // u: force uppercase
+    // c: force Title Case
+    // f: force First capital letter
+    // s: strip spaces
+    // p: remove punctuation
+    // etc
     Pair pair = getFirstSubStringLocation(body);
     if (pair == null) {
       return null;
