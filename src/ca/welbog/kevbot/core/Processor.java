@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import ca.welbog.kevbot.communication.Request;
 import ca.welbog.kevbot.communication.Response;
+import ca.welbog.kevbot.communication.Subsequence;
 import ca.welbog.kevbot.log.Logger;
 import ca.welbog.kevbot.persist.SingleFile;
 import ca.welbog.kevbot.responder.HelpResponder;
@@ -157,26 +158,34 @@ public class Processor {
     return runRecursiveResponders(request, response, admin);
   }
 
-  private Response runRecursiveResponders(Request request, Response intermediateResponse,
+  private Response runRecursiveResponders(
+  		Request request, 
+  		Response intermediateResponse,
       boolean admin) {
-
-    String subMessage = intermediateResponse.findFirstSubString();
-    if (subMessage == null) {
+  	
+  	Subsequence subsequence = Subsequence.buildFirstSubsequence(intermediateResponse.getBody());
+  	if (!subsequence.containsSubsequence()) {
       return intermediateResponse;
     }
+  	
+    // Loop until there's no more recursion, or until we've hit a maximum.
     int iteration = 0;
-    while (subMessage != null && iteration < MAX_ITERATION) {
-      // Loop until there's no more recursion, or until we've hit a maximum.
-      Request innerRequest = new Request(request.getMedium(), request.getChannel(),
-          request.getSender(), subMessage, request.getNickname(), request.getMode(),
+    while (subsequence.containsSubsequence() && iteration < MAX_ITERATION) {
+      Request innerRequest = new Request(
+      		request.getMedium(), request.getChannel(),
+          request.getSender(), subsequence.getRecursiveString(), 
+          request.getNickname(), request.getMode(),
           request.getType());
       innerRequest.allowReplies(false);
       String innerResponse = runRecursiveResponders(innerRequest);
-      intermediateResponse.replaceFirstSubString(innerResponse);
       iteration++;
-      subMessage = intermediateResponse.findFirstSubString();
+      subsequence = Subsequence.buildFirstSubsequence(subsequence.replaceSubsequence(innerResponse));
     }
-    return intermediateResponse;
+    return new Response(
+    		intermediateResponse.getTarget(),
+    		subsequence.toString(),
+    		intermediateResponse.getType()
+    		);
   }
 
   private String runRecursiveResponders(Request request) {

@@ -9,7 +9,7 @@ import ca.welbog.kevbot.log.Logger;
 
 public class KevBot {
 
-  public static final String VERSION = "6.2.0";
+  public static final String VERSION = "6.3.0";
 
   public static void main(String[] args) throws IOException {
 
