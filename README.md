@@ -154,3 +154,7 @@ Clobbered git history, opened the repo to the public.
 ### 6.2.x
 
 Late 2020 - Added Maven, refactored code, added setup scripts, added Spring. General focus on bringing engineering to KevBot. Making a codebase to which I might actually want to contribute. 
+
+### 6.3.x
+
+Early 2021 - Added support for recursion flags, specifically to support Blabrecs-like word generation, but also applicable elsewhere. (Blabrecs ref: https://mkremins.github.io/blabrecs/)
