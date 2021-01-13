@@ -67,6 +67,7 @@ In no particular order:
   * ~~A general set-up script that can create default configuration, as well as basic default launch scripts for HTTP & Discord.~~
 * "Explain" mode that lists responder metadata so the handler chain can be examined & debugged more directly.
 * An actual logger instead of stdout.
+* Move Discord adapter to Java with something like https://github.com/Discord4J/Discord4J or https://github.com/DV8FromTheWorld/JDA
 * Lots of other stuff
 
 ## Code structure
