@@ -68,6 +68,7 @@ In no particular order:
 * "Explain" mode that lists responder metadata so the handler chain can be examined & debugged more directly.
 * An actual logger instead of stdout.
 * Move Discord adapter to Java with something like https://github.com/Discord4J/Discord4J or https://github.com/DV8FromTheWorld/JDA
+* Make MySQL optional somehow - such as Setup does nothing if the plugins that use it are not present. Maybe add a PluginSetup abstraction, not dissimilar to Documentation, that is used by the Setup system?
 * Lots of other stuff
 
 ## Code structure
