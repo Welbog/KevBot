@@ -3,10 +3,7 @@ package ca.welbog.kevbot;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 /**
@@ -53,7 +50,7 @@ public class Setup {
     Statement statement = null;
 
     try {
-      statement = conn.createStatement();
+      statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);;
       statement.execute(MESSAGE_TABLE);
       statement.execute(REPLY_TABLE);
       statement.execute(MARKOV_TABLE);

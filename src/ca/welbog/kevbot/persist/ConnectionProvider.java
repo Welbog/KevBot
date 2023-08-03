@@ -16,12 +16,14 @@ public class ConnectionProvider {
   private Date lastConnectionCreationTime = new Date();
   private static final Long TIMEOUT_IN_MILLISECONDS = 600000L; // 10 minutes
   private static final String configFile = "kevbot.properties";
+  private String driverClassName;
 
   // This'll look something like
   // "jdbc:mysql://localhost:port/kevbot?user=kevbot&password=something"
   private final String connectionString;
 
-  public ConnectionProvider() throws IOException {
+  public ConnectionProvider(String driverClassName) throws IOException {
+    this.driverClassName = driverClassName;
     Properties config = new Properties();
     InputStream input = new FileInputStream(configFile);
     config.load(input);
@@ -44,7 +46,7 @@ public class ConnectionProvider {
           System.out.println("Creating new MySQL connection.");
 
           try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName(driverClassName).newInstance();
           }
           catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
@@ -62,9 +64,11 @@ public class ConnectionProvider {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
+      e.printStackTrace();
     }
     return false;
   }
@@ -83,6 +87,7 @@ public class ConnectionProvider {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -100,6 +105,7 @@ public class ConnectionProvider {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());

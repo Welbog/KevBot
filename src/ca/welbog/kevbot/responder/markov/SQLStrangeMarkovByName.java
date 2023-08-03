@@ -119,8 +119,7 @@ public class SQLStrangeMarkovByName {
   private synchronized String retrieveNext(String user, String seed) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-          ResultSet.CONCUR_READ_ONLY);
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);;
       seed = seed.replaceAll("\\\\", "\\\\\\\\");
       seed = seed.replaceAll("'", "\\\\'");
       user = user.replaceAll("\\\\", "\\\\\\\\");
@@ -183,6 +182,7 @@ public class SQLStrangeMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {

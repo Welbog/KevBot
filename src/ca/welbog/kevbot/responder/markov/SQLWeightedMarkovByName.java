@@ -42,7 +42,7 @@ public class SQLWeightedMarkovByName {
   public synchronized int size() {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement.executeQuery("SELECT COUNT(1) FROM weightedmarkovbyuser;");
       // ResultSet rs = statement.executeQuery("SELECT * FROM markov;");
       if (rs == null) {
@@ -64,6 +64,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return 0;
     }
     catch (Exception e) {
@@ -356,7 +357,7 @@ public class SQLWeightedMarkovByName {
 
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
       // Find all users that have at least a certain number of word pairs
       ResultSet countSet = statement.executeQuery(
@@ -377,6 +378,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -387,7 +389,7 @@ public class SQLWeightedMarkovByName {
   private synchronized void writePair(String user, String seed, String word) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       seed = seed.replaceAll("\\\\", "\\\\\\\\");
       word = word.replaceAll("\\\\", "\\\\\\\\");
       seed = seed.replaceAll("'", "\\\\'");
@@ -419,6 +421,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -428,8 +431,7 @@ public class SQLWeightedMarkovByName {
   private synchronized double getWeight(String seed, String word) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-          ResultSet.CONCUR_READ_ONLY);
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       seed = seed.replaceAll("\\\\", "\\\\\\\\");
       seed = seed.replaceAll("'", "\\\\'");
       word = word.replaceAll("\\\\", "\\\\\\\\");
@@ -468,6 +470,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -478,8 +481,7 @@ public class SQLWeightedMarkovByName {
   private synchronized double getWeightByUser(String user, String seed, String word) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-          ResultSet.CONCUR_READ_ONLY);
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       seed = seed.replaceAll("\\\\", "\\\\\\\\");
       seed = seed.replaceAll("'", "\\\\'");
       user = user.replaceAll("\\\\", "\\\\\\\\");
@@ -520,6 +522,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -530,8 +533,7 @@ public class SQLWeightedMarkovByName {
   private synchronized String retrieveNext(String user, String seed) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-          ResultSet.CONCUR_READ_ONLY);
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       seed = seed.replaceAll("\\\\", "\\\\\\\\");
       seed = seed.replaceAll("'", "\\\\'");
       user = user.replaceAll("\\\\", "\\\\\\\\");
@@ -583,6 +585,7 @@ public class SQLWeightedMarkovByName {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {

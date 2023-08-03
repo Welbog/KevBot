@@ -61,7 +61,7 @@ public class DoubleSQL {
       user = sanitize(user);
       purgeIfDeleted(m);
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       boolean isParameterized = isParameterized(m);
       String clean = cleanString(m, isParameterized);
       if (!isParameterized || !isStupid(clean)) {
@@ -90,6 +90,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -122,7 +123,7 @@ public class DoubleSQL {
       Connection conn = getConnection();
       long id = getActiveID(m, true);
       if (id >= 0) {
-        Statement statement = conn.createStatement();
+        Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         m = m.replaceAll("\\\\", "\\\\\\\\");
         r = r.replaceAll("\\\\", "\\\\\\\\");
         m = m.replaceAll("'", "\\\\'");
@@ -141,6 +142,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -157,6 +159,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -175,7 +178,7 @@ public class DoubleSQL {
   private synchronized void purge(long id) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       String SQLStatement1 = "" + "DELETE FROM Message WHERE id = " + id + ";";
       String SQLStatement2 = "" + "DELETE FROM Reply WHERE messageid = " + id + ";";
       statement.execute(SQLStatement1);
@@ -187,6 +190,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -199,7 +203,7 @@ public class DoubleSQL {
       Connection conn = getConnection();
       long id = getExactMatchID(s, false);
       if (isDeleted(id)) {
-        Statement statement = conn.createStatement();
+        Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         statement.execute("" + "UPDATE Message SET deleted = 0 WHERE id = " + id + ";");
         statement.close();
         return true;
@@ -210,6 +214,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     return false;
   }
@@ -227,7 +232,7 @@ public class DoubleSQL {
           return true;
         }
         else { // Soft delete normal factoids
-          Statement statement = conn.createStatement();
+          Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
           SQLStatement1 = "" + "UPDATE Message SET deleted = 1, deleteuser = '" + user
               + "', deletedate = now() WHERE id = " + id + ";";
           statement.execute(SQLStatement1);
@@ -244,6 +249,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -254,7 +260,7 @@ public class DoubleSQL {
   public synchronized void deleteAll() {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       String SQLStatement1 = "" + "TRUNCATE TABLE Message;";
       String SQLStatement2 = "" + "TRUNCATE TABLE Reply;";
       statement.execute(SQLStatement1);
@@ -266,6 +272,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
     }
     catch (Exception e) {
       System.out.println("Exception: " + e.getMessage());
@@ -284,7 +291,7 @@ public class DoubleSQL {
     try {
       Connection conn = getConnection();
       if (id >= -1) {
-        Statement statement = conn.createStatement();
+        Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         ResultSet rs1 = statement
             .executeQuery("SELECT message FROM Message WHERE id = " + id + ";");
         rs1.first();
@@ -325,6 +332,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {
@@ -338,7 +346,7 @@ public class DoubleSQL {
       Connection conn = getConnection();
       long id = getActiveID(m, false);
       if (id >= -1) {
-        Statement statement = conn.createStatement();
+        Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         ResultSet rs = statement.executeQuery("SELECT message FROM Message WHERE id = " + id + ";");
         if (rs == null) {
           statement.close();
@@ -361,6 +369,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {
@@ -377,7 +386,7 @@ public class DoubleSQL {
       if (id == -1) {
         return "";
       }
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement.executeQuery(
           "SELECT reply FROM Reply WHERE messageid = " + id + " ORDER BY rand() LIMIT 1;");
       if (rs == null) {
@@ -410,6 +419,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {
@@ -425,7 +435,7 @@ public class DoubleSQL {
       if (id == -1) {
         return "";
       }
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement
           .executeQuery("SELECT reply FROM Reply WHERE messageid = " + id + ";");
       if (rs == null) {
@@ -464,6 +474,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
     catch (Exception e) {
@@ -476,7 +487,7 @@ public class DoubleSQL {
     try {
       Connection conn = getConnection();
       if (id >= -1) {
-        Statement statement = conn.createStatement();
+        Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         ResultSet rs = statement.executeQuery("SELECT message FROM Message WHERE id = " + id + ";");
         if (rs == null) {
           statement.close();
@@ -513,6 +524,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return null;
     }
     catch (Exception e) {
@@ -535,7 +547,7 @@ public class DoubleSQL {
   public synchronized int getSize() {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement.executeQuery("SELECT COUNT(*) FROM Message WHERE deleted = 0;");
       if (rs == null) {
         statement.close();
@@ -556,6 +568,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return 0;
     }
     catch (Exception e) {
@@ -571,7 +584,7 @@ public class DoubleSQL {
   private synchronized long getRandomID() {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
       ResultSet countSet = statement
           .executeQuery("SELECT COUNT(*) FROM Message WHERE deleted = 0;");
@@ -607,6 +620,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return -1;
     }
     catch (Exception e) {
@@ -626,7 +640,7 @@ public class DoubleSQL {
   public synchronized String deleteSpecific(String m, String r) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       long id = getActiveID(m, false);
       if (id < 0) {
         return "Sorry, " + m + " doesn't exist in the database.";
@@ -650,7 +664,7 @@ public class DoubleSQL {
         return "Sorry, " + m + " has only one reply. Use 'forget' instead to delete it.";
       }
 
-      statement = conn.createStatement();
+      statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       int numberDeleted = statement.executeUpdate("" + "DELETE FROM Reply " + "WHERE reply = '"
           + sanitize(r) + "' " + "AND messageid = " + id + " " + "LIMIT 1;");
       statement.close();
@@ -666,6 +680,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
   }
@@ -674,7 +689,7 @@ public class DoubleSQL {
     try {
       String result = "";
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement
           .executeQuery("" + "SELECT createuser, createdate, deleteuser, deletedate, deleted "
               + "FROM Message " + "WHERE id = " + id + ";");
@@ -722,6 +737,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return "";
     }
   }
@@ -733,7 +749,7 @@ public class DoubleSQL {
   private synchronized boolean isDeleted(long id) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement
           .executeQuery("" + "SELECT deleted " + "FROM Message " + "WHERE id = " + id + ";");
 
@@ -756,6 +772,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return false;
     }
     catch (Exception e) {
@@ -769,7 +786,7 @@ public class DoubleSQL {
     // I need to figure out how to get this to emulate KevBot.
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       m = cleanString(m, false);
       m = m.replaceAll("\\\\", "\\\\\\\\");
       m = m.replaceAll("'", "\\\\'");
@@ -790,7 +807,7 @@ public class DoubleSQL {
         }
       }
       if (!nonregexmatch) {
-        statement = conn.createStatement();
+        statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         rs = statement.executeQuery("" + "SELECT id " + "FROM Message " + "WHERE '" + m
             + "' RLIKE cleanmessage " + "AND regex = 1 " + (activeOnly ? "AND deleted = 0 " : "")
             + "ORDER BY deleted ASC " + ";");
@@ -816,6 +833,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return -1;
     }
     catch (Exception e) {
@@ -852,7 +870,7 @@ public class DoubleSQL {
       // System.out.println("\tgetID: " + m);
 
       // Parameterized factoids
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement.executeQuery("" + "SELECT id " + "FROM Message " + "WHERE '"
           + cleanedParameterString + "' = cleanmessage " + "AND regex = 1 "
           + (activeOnly ? "AND deleted = 0 " : "") + "ORDER BY deleted ASC " + ";");
@@ -871,7 +889,7 @@ public class DoubleSQL {
 
         // Normal factoids (match these against the clean string normally, not
         // against the exact string)
-        statement = conn.createStatement();
+        statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         rs = statement.executeQuery(
             "" + "SELECT id " + "FROM Message " + "WHERE cleanmessage = '" + cleanedNormalString
                 + "' " + "AND regex = 0 " + (activeOnly ? "AND deleted = 0 " : "") + ";");
@@ -898,6 +916,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return -1;
     }
     catch (Exception e) {
@@ -961,7 +980,7 @@ public class DoubleSQL {
   public synchronized boolean isParameterized(long id) {
     try {
       Connection conn = getConnection();
-      Statement statement = conn.createStatement();
+      Statement statement = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
       ResultSet rs = statement
           .executeQuery("" + "SELECT regex " + "FROM Message " + "WHERE id = " + id + ";");
 
@@ -984,6 +1003,7 @@ public class DoubleSQL {
       System.out.println("SQLException: " + ex.getMessage());
       System.out.println("SQLState: " + ex.getSQLState());
       System.out.println("VendorError: " + ex.getErrorCode());
+      ex.printStackTrace();
       return false;
     }
     catch (Exception e) {
@@ -993,7 +1013,7 @@ public class DoubleSQL {
   }
 
   public static void main(String[] args) throws Exception {
-    DoubleSQL doug = new DoubleSQL(new ConnectionProvider());
+    DoubleSQL doug = new DoubleSQL(new ConnectionProvider("com.mysql.cj.jdbc.Driver"));
     System.out.println(cleanString("bob $*", true));
     System.out.println(cleanString("bob $*", false));
     System.out.println(cleanString("bob $dog", true));

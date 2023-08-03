@@ -29,7 +29,9 @@
 	
 	<bean name="rahlFactory" class="ca.welbog.kevbot.persist.RAHLFactory"/>
 
-	<bean name="sqlConnectionProvider" class="ca.welbog.kevbot.persist.ConnectionProvider" />
+	<bean name="sqlConnectionProvider" class="ca.welbog.kevbot.persist.ConnectionProvider">
+		<constructor-arg type="String" value="com.mysql.cj.jdbc.Driver"/> <!-- Driver class -->
+	</bean>
 	
 	<bean name="factoidDatabase" class="ca.welbog.kevbot.responder.factoid.DoubleSQL">
 		<constructor-arg ref="sqlConnectionProvider"/>
